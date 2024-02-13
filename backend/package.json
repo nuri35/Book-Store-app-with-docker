@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "NODE_ENV=development  ts-node-dev -r tsconfig-paths/register --transpile-only src/index.ts",
+    "start": "NODE_ENV=production  node  ./dist/index.js",
+    "build": "tsc -p ."
   },
   "repository": {
     "type": "git",
@@ -16,5 +18,52 @@
   "bugs": {
     "url": "https://github.com/nuri35/Book-Store-app-with-docker/issues"
   },
-  "homepage": "https://github.com/nuri35/Book-Store-app-with-docker#readme"
+  "homepage": "https://github.com/nuri35/Book-Store-app-with-docker#readme",
+  "dependencies": {
+    "@bestnetlib/common": "^1.0.45",
+    "@types/passport": "^1.0.16",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/uuid": "^9.0.8",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "class-validator-extended": "^3.2.0",
+    "compression": "^1.7.4",
+    "connect-timeout": "^1.9.0",
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "express-http-context": "^1.2.4",
+    "express-winston": "^4.2.0",
+    "helmet": "^7.1.0",
+    "hpp": "^0.2.3",
+    "http-status-codes": "^2.3.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "pg": "^8.11.3",
+    "pg-promise": "^11.5.4",
+    "reflect-metadata": "^0.2.1",
+    "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "tslib": "^2.6.2",
+    "typedi": "^0.10.0",
+    "typeorm": "^0.3.20",
+    "typeorm-naming-strategies": "^4.1.0",
+    "typeorm-typedi-extensions": "^0.4.1",
+    "typescript": "^5.3.3",
+    "uuid": "^9.0.1",
+    "winston": "^3.11.0",
+    "winston-transport": "^4.7.0"
+  },
+  "devDependencies": {
+    "@types/compression": "^1.7.5",
+    "@types/connect-timeout": "^0.0.39",
+    "@types/cookie-parser": "^1.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/hpp": "^0.2.6",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/morgan": "^1.9.9"
+  }
 }
