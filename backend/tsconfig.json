@@ -1,0 +1,34 @@
+{
+    "compilerOptions": {
+      "target": "es2016",                                   
+      "module": "commonjs",         
+      "outDir": "./dist" ,  
+      "esModuleInterop": true,   
+      "typeRoots": ["node_modules/@types"],                       
+      "forceConsistentCasingInFileNames": true,           
+      "strict": true,        
+      "strictPropertyInitialization": false,              
+      "declaration": true,
+      "skipLibCheck": true,
+      "sourceMap": true,
+      "moduleResolution": "node",
+      "resolveJsonModule": true,
+      "emitDecoratorMetadata": true,
+       "experimentalDecorators": true,
+       "importHelpers": true,
+       "baseUrl": "./src",
+       "paths": {
+        "@/*": ["*"],
+        "@cluster/*": ["cluster/*"],
+        "@custom-config/*": ["custom-config/*"],
+        "@entities/*": ["entities/*"],
+        
+         
+       }                    
+    },
+    "include": ["src/**/*.ts", ".env.dev", ".env.prod"],
+  
+    "exclude": ["node_modules"]
+  }
+  
+ 
