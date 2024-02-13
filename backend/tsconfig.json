@@ -17,14 +17,32 @@
        "experimentalDecorators": true,
        "importHelpers": true,
        "baseUrl": "./src",
-       "paths": {
+      "paths": {
         "@/*": ["*"],
         "@cluster/*": ["cluster/*"],
         "@custom-config/*": ["custom-config/*"],
         "@entities/*": ["entities/*"],
-        
+        "@source/*": ["source/*"],
+        "@jwt/*": ["jwt/*"],
+        "@template/*": ["template/*"],
+        "@images/*": ["images/*"],
+        "@notifications/*": ["notifications/*"],
+        "@events/*": ["events/*"],
+        "@utils/*": ["utils/*"],
+        "@logger/*": ["logger/*"],
+        "@passport/*": ["passport/*"],
+        "@digit-code/*": ["digit-code/*"],
+        "@responses/*": ["responses/*"],
+        "@responses-errors/*": ["responses-errors/*"],
+         "@controllers/*": ["controllers/*"],
+         "@decorators/*": ["decorators/*"],
+         "@common-types/*": ["common-types/*"],
+         "@middlewares/*": ["middlewares/*"],
+         "@providers/*": ["providers/*"],
+         "@routes/*": ["routes/*"],
+         "@services/*": ["services/*"],
          
-       }                    
+       }                      
     },
     "include": ["src/**/*.ts", ".env.dev", ".env.prod"],
   
