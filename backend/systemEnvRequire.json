@@ -1,0 +1,3 @@
+{
+    "requiredEnvVariables": ["NODE_ENV", "API_PREFIX", "DB_HOST", "DB_PASS", "DB_NAME", "DB_USER", "DB_PORT", "NATS_CLUSTER_ID", "NATS_CLIENT_ID", "NATS_URL"]
+  }

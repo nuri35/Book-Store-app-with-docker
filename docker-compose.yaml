@@ -7,7 +7,7 @@ services:
       - '5732:5732'
 
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-datase:/var/lib/postgresql/data
 
     networks:
       - app
@@ -59,21 +59,20 @@ services:
     networks:
       - app
 
-  mail:
-    image: nurettinsenbackend/testmail
-    restart: on-failure
-    depends_on:
-      - nats
-    environment:
-      - NATS_URL=http://nats:4222
-    ports:
-      - 4000:4000
-    networks:
-      - app
+  # mail:
+  #   image: nurettinsenbackend/testmail
+  #   restart: on-failure
+  #   depends_on:
+  #     - nats
+  #   environment:
+  #     - NATS_URL=http://nats:4222
+  #   ports:
+  #     - 4000:4000
+  #   networks:
+  #     - app
 
 networks:
   app:
     driver: bridge
 volumes:
-  db-data:
-#  mola
+  db-datase:

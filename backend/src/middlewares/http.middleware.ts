@@ -10,6 +10,8 @@ import hpp from 'hpp';
 import timeout from 'connect-timeout';
 import passportStrategy from '@passport/strategy.passport';
 import cookieParser from 'cookie-parser';
+import path from 'path';
+import * as i18n from 'i18n';
 
 export class HttpMiddleware {
   constructor() {
@@ -42,8 +44,14 @@ export class HttpMiddleware {
 
     _express.use(hpp());
     _express.use(timeout('20s'));
-
+    i18n.configure({
+      locales: ['tr'],
+      defaultLocale: 'tr',
+      directory: path.join(__dirname, 'locales'),
+      objectNotation: true,
+    });
     _express.use(passport.initialize());
+    _express.use(i18n.init);
 
     return _express;
   }
