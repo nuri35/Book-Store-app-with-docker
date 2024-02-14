@@ -4,43 +4,34 @@ import { EntityManager } from 'typeorm';
 import { Response } from 'express';
 import { UserEntity } from '@entities/user.entity';
 import { SessionEntity } from '@entities/session.entity';
-import MemberRegisterDto from '@controllers/member/dto/member.register.dto';
+import AuthRegisterDto from '@controllers/auth/dto/auth.register.dto';
 import { Code, Messages, ErrorCode, ErrorMessages } from '@bestnetlib/common';
 import { CreatedResponse } from '@responses/created.response';
-
-import {
-  ApplicationType,
-  TokenOperationType,
-  recStatusType,
-} from '@common-types/enums/type.enum';
-import { ElectronicMessaging } from '@notifications/index';
+import { TokenOperationType } from '@common-types/enums/type.enum';
+// import { ElectronicMessaging } from '@notifications/index';
 import { OkResponse } from '@responses/ok.response';
 import { UserPayload } from '@common-types/interfaces/payload.interface';
 import { InvalidTokenError } from '@/responses-errors/invalid.token.error';
 import { NotFoundError } from '@/responses-errors/not.found.error';
-
-import MemberLoginDto from '@/controllers/member/dto/member.login.dto';
+import AuthLoginDto from '@/controllers/auth/dto/auth.login.dto';
 import { PasswordProvider } from '@/providers/password.provider';
 import { JwtProvider } from '@/providers/jwt.provider';
-
-import TransformService from '@/services/conversion/data.transform';
-
-import VerifyEmailDto from '@/controllers/member/dto/member.verify.email.dto';
-
-import IdentifierResDto from '@/controllers/member/response-dto/identifier.dto';
-import LoginResDto from '@/controllers/member/response-dto/login.dto';
-import { MemberRepository } from '@/repositories/member/member.repository';
-import { UserRepository } from '@/repositories/user/user.repository';
-import { TokenRepository } from '@/repositories/token/token.repository';
-import { SessionRepository } from '@/repositories/session/session.repository';
-import { UserHelper } from '@/services/helper/user/user.helper';
-import { SessionHelper } from '@/services/helper/session/session.helper';
+// import TransformService from '@/services/conversion/data.transform';
+import VerifyEmailDto from '@/controllers/auth/dto/auth.verify.email.dto';
+// import IdentifierResDto from '@/controllers/auth/response-dto/identifier.dto';
+// import LoginResDto from '@/controllers/member/response-dto/login.dto';
+// import { MemberRepository } from '@/repositories/member/member.repository';
+// import { UserRepository } from '@/repositories/user/user.repository';
+// import { TokenRepository } from '@/repositories/token/token.repository';
+// import { SessionRepository } from '@/repositories/session/session.repository';
+// import { UserHelper } from '@/services/helper/user/user.helper';
+// import { SessionHelper } from '@/services/helper/session/session.helper';
 
 @Service()
 export class AuthService {
   private readonly dbSource = DataSourceFactory.source;
 
-  public async register(dto: MemberRegisterDto) {
+  public async register(dto: AuthRegisterDto) {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
         try {
@@ -179,7 +170,7 @@ export class AuthService {
     );
   }
 
-  public async login(dto: MemberLoginDto, res: Response) {
+  public async login(dto: AuthLoginDto, res: Response) {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
         // Promise<OkResponse<LoginResDto>>
