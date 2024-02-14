@@ -35,4 +35,3 @@ class App {
 }
 
 export default new App();
-// buraya kadar yarın kaldıgın yerden devam edersın.... 10'Da buraya başla...
