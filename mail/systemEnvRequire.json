@@ -1,0 +1,4 @@
+{
+    "requiredEnvVariables": ["PORT", "NODE_ENV", "MAIL_HOST", "USER_MAIL_AUTH", "USER_MAIL_PASSWORD", "NATS_CLUSTER_ID", "NATS_CLIENT_ID", "NATS_URL"]
+  }
+ 
