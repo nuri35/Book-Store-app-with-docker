@@ -8,7 +8,7 @@ import AuthRegisterDto from '@controllers/auth/dto/auth.register.dto';
 import { Code, Messages, ErrorCode, ErrorMessages } from '@bestnetlib/common';
 import { CreatedResponse } from '@responses/created.response';
 import { TokenOperationType } from '@common-types/enums/type.enum';
-// import { ElectronicMessaging } from '@notifications/index';
+import { ElectronicMessaging } from '@notifications/index';
 import { OkResponse } from '@responses/ok.response';
 import { UserPayload } from '@common-types/interfaces/payload.interface';
 import { InvalidTokenError } from '@/responses-errors/invalid.token.error';
@@ -16,13 +16,14 @@ import { NotFoundError } from '@/responses-errors/not.found.error';
 import AuthLoginDto from '@/controllers/auth/dto/auth.login.dto';
 import { PasswordProvider } from '@/providers/password.provider';
 import { JwtProvider } from '@/providers/jwt.provider';
-// import TransformService from '@/services/conversion/data.transform';
+import TransformService from '@/services/conversion/data.transform';
 import VerifyEmailDto from '@/controllers/auth/dto/auth.verify.email.dto';
 // import IdentifierResDto from '@/controllers/auth/response-dto/identifier.dto';
 // import LoginResDto from '@/controllers/member/response-dto/login.dto';
 // import { MemberRepository } from '@/repositories/member/member.repository';
 import { UserRepository } from '@/repositories/user/user.repository';
 import { TokenRepository } from '@/repositories/token/token.repository';
+import IdentifierResDto from '@/controllers/auth/response-dto/identifier.dto';
 // import { SessionRepository } from '@/repositories/session/session.repository';
 // import { UserHelper } from '@/services/helper/user/user.helper';
 // import { SessionHelper } from '@/services/helper/session/session.helper';
@@ -46,28 +47,25 @@ export class AuthService {
               publicId: newUser.publicId,
               globalDeviceName: newUser.globalDeviceName,
             });
-          //   new ElectronicMessaging({
-          //     contact:
-          //       newUser.app.type === ApplicationType.Src
-          //         ? newUser.I.phone
-          //         : newUser.I.mail,
-          //     content: {
-          //       token: newToken.clientToken,
-          //       fullName: newUser.name + ' ' + newUser.surname,
-          //     },
-          //     operation:
-          //       newToken.operation as TokenOperationType.verifyAfterRegistration,
-          //   }).load(newToken.app.type);
-          //   const convertData = TransformService.convert<
-          //     IdentifierResDto,
-          //     UserEntity
-          //   >(newUser, IdentifierResDto, 'excludeAll');
-          //   return new CreatedResponse<IdentifierResDto>(
-          //     Code.SUCCESS_CREATE,
-          //     Messages.SUCCESS_CREATE,
-          //     convertData
-          //   );
-          return 'ok';
+          // email... module system...
+          new ElectronicMessaging({
+            contact: newUser.mail,
+            content: {
+              token: newToken.clientToken,
+              fullName: newUser.name + ' ' + newUser.surname,
+            },
+            operation:
+              newToken.operation as TokenOperationType.verifyAfterRegistration,
+          }).load();
+          const convertData = TransformService.convert<
+            IdentifierResDto,
+            UserEntity
+          >(newUser, IdentifierResDto, 'excludeAll');
+          return new CreatedResponse<IdentifierResDto>(
+            Code.SUCCESS_CREATE,
+            Messages.SUCCESS_CREATE,
+            convertData
+          );
         } catch (error) {
           throw error;
         }

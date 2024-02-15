@@ -1,7 +1,8 @@
 export enum UserType {
-  User = 0,
-  StoreManager = 1,
-  Admin = 2,
+  NoneVerifyMember = 0,
+  User = 1,
+  StoreManager = 2,
+  Admin = 3,
 }
 
 export enum OperationType {
