@@ -21,8 +21,8 @@ import VerifyEmailDto from '@/controllers/auth/dto/auth.verify.email.dto';
 // import IdentifierResDto from '@/controllers/auth/response-dto/identifier.dto';
 // import LoginResDto from '@/controllers/member/response-dto/login.dto';
 // import { MemberRepository } from '@/repositories/member/member.repository';
-// import { UserRepository } from '@/repositories/user/user.repository';
-// import { TokenRepository } from '@/repositories/token/token.repository';
+import { UserRepository } from '@/repositories/user/user.repository';
+import { TokenRepository } from '@/repositories/token/token.repository';
 // import { SessionRepository } from '@/repositories/session/session.repository';
 // import { UserHelper } from '@/services/helper/user/user.helper';
 // import { SessionHelper } from '@/services/helper/session/session.helper';
@@ -35,23 +35,17 @@ export class AuthService {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
         try {
-          //  Promise<CreatedResponse<IdentifierResDto>>
-          //   const newMember = await transactionalEntityManager
-          //     .withRepository(MemberRepository)
-          //     .customCreate(dto);
-          //   const newUser = await transactionalEntityManager
-          //     .withRepository(UserRepository)
-          //     .customCreate(dto, newMember);
-          //   const newToken = await transactionalEntityManager
-          //     .withRepository(TokenRepository)
-          //     .customCreate({
-          //       operation: TokenOperationType.verifyAfterRegistration,
-          //       userId: newUser.id,
-          //       memberId: newMember.id,
-          //       publicId: newUser.publicId,
-          //       app: newUser.app,
-          //       globalDeviceName: newUser.globalDeviceName,
-          //     });
+          const newUser = await transactionalEntityManager
+            .withRepository(UserRepository)
+            .customCreate(dto);
+          const newToken = await transactionalEntityManager
+            .withRepository(TokenRepository)
+            .customCreate({
+              operation: TokenOperationType.verifyAfterRegistration,
+              userId: newUser.id,
+              publicId: newUser.publicId,
+              globalDeviceName: newUser.globalDeviceName,
+            });
           //   new ElectronicMessaging({
           //     contact:
           //       newUser.app.type === ApplicationType.Src
@@ -73,6 +67,7 @@ export class AuthService {
           //     Messages.SUCCESS_CREATE,
           //     convertData
           //   );
+          return 'ok';
         } catch (error) {
           throw error;
         }

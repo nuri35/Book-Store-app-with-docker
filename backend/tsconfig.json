@@ -41,6 +41,7 @@
          "@providers/*": ["providers/*"],
          "@routes/*": ["routes/*"],
          "@services/*": ["services/*"],
+         "@repositories/*": ["repositories/*"],
          
        }                      
     },

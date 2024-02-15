@@ -11,7 +11,4 @@ export class HumanEntity {
     nullable: true,
   })
   title?: string;
-
-  @Column()
-  mail: string;
 }

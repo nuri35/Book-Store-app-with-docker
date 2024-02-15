@@ -4,7 +4,6 @@ import {
   TokenUsabilityType,
   TokenOperationType,
 } from '@/common-types/enums/type.enum';
-import { DigitCodeProvider } from '@/providers/digit.code.provider';
 import { JwtProvider } from '@/providers/jwt.provider';
 import { ExpiredDateEntity } from '@/entities/embeded-entities';
 import { DateProvider } from '@/providers/date.provider';
@@ -21,20 +20,12 @@ export class TokenEntity extends BaseCustomEntity {
 
   @BeforeInsert()
   async setToken() {
-    if (
-      this.operation !== TokenOperationType.loginAfterValidRegistration &&
-      this.operation !== TokenOperationType.refreshToken
-    ) {
-      this.token = DigitCodeProvider.generate();
-      this.clientToken = this.token;
+    const tokenObj = JwtProvider.signJWT(this.keyPublicValue, this.operation);
+    this.token = tokenObj.jwtid;
+    if (this.operation === TokenOperationType.refreshToken) {
+      this.clientRfToken = tokenObj.token;
     } else {
-      const tokenObj = JwtProvider.signJWT(this.keyPublicValue, this.operation);
-      this.token = tokenObj.jwtid;
-      if (this.operation === TokenOperationType.refreshToken) {
-        this.clientRfToken = tokenObj.token;
-      } else {
-        this.clientToken = tokenObj.token;
-      }
+      this.clientToken = tokenObj.token;
     }
   }
 

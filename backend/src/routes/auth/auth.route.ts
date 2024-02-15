@@ -61,3 +61,4 @@ export class AuthRoute implements Routes {
     );
   }
 }
+// burayı takıp ederek servis ıcerılerını ıstenılen gıbı yapp..

@@ -12,13 +12,12 @@ import { UserType } from '@common-types/enums/type.enum';
 import { UserLogEntity } from '@/entities/user.log.entity';
 import { SessionEntity } from '@entities/session.entity';
 import { Exclude } from 'class-transformer';
-import { HumanEntity, ExpiredDateEntity } from '@/entities/embeded-entities';
-import { DateProvider } from '@/providers/date.provider';
+import { HumanEntity } from '@/entities/embeded-entities';
 import { PasswordProvider } from '@/providers/password.provider';
 import crypto from 'crypto';
 
 @Entity()
-@Unique(['idtaxNumber'])
+@Unique(['mail'])
 export class UserEntity extends BaseCustomEntity {
   @Column({
     type: 'enum',
@@ -46,7 +45,7 @@ export class UserEntity extends BaseCustomEntity {
   surname: string;
 
   @Column()
-  idtaxNumber: string;
+  mail: string;
 
   @Exclude()
   @Column()
@@ -65,13 +64,6 @@ export class UserEntity extends BaseCustomEntity {
     delete this['password']; // Şifre alanını nesneden sil
 
     return { ...this }; // Şifresiz nesneyi döndür
-  } //todo responslar duzeltıkten sonra sılınecek..gerek yok gıbı.
-
-  @BeforeInsert()
-  setExpiredDate() {
-    if (this.expired.date) return;
-    this.expired = new ExpiredDateEntity();
-    this.expired.date = DateProvider.expireDatePerson(30);
   }
 
   @OneToMany(() => UserLogEntity, (userlog) => userlog.user, {
@@ -88,7 +80,4 @@ export class UserEntity extends BaseCustomEntity {
 
   @Column(() => HumanEntity)
   I: HumanEntity;
-
-  @Column(() => ExpiredDateEntity)
-  expired: ExpiredDateEntity;
 }
