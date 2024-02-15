@@ -37,12 +37,6 @@ export class AuthRoute implements Routes {
     );
 
     this.router.post(
-      `${this.path}${RouterPath.VerifyEndpoint}`,
-      ValidationMiddleware(VerifyEmailDto),
-      this.auth.verifyEmailHandler
-    );
-
-    this.router.post(
       `${this.path}${RouterPath.LoginEndpoint}`,
       ValidationMiddleware(AuthLoginDto),
       this.auth.loginHandler
@@ -61,4 +55,3 @@ export class AuthRoute implements Routes {
     );
   }
 }
-// burayı takıp ederek servis ıcerılerını ıstenılen gıbı yapp..

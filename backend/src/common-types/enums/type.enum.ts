@@ -1,5 +1,4 @@
 export enum UserType {
-  NoneVerifyMember = 0,
   User = 1,
   StoreManager = 2,
   Admin = 3,
@@ -13,7 +12,7 @@ export enum OperationType {
 }
 
 export enum TokenOperationType {
-  verifyAfterRegistration = 'verify',
+  welcomeAfterRegistration = 'welcome',
   loginAfterValidRegistration = 'login',
   refreshToken = 'rfToken',
 }

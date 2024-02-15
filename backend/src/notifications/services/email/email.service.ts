@@ -1,7 +1,7 @@
 import { NotificationHandler } from '@notifications/handle';
 import { natsWrapper } from '@providers/nats.provider';
 import { RouterPath } from '@common-types/enums/router.enum';
-import { VerifyEmailTemplate } from '@template//verify.mail.template';
+import { WelcomeEmailTemplate } from '@template//verify.mail.template';
 import {
   IDEM,
   OperationEmailTemplate,
@@ -15,19 +15,18 @@ export class EmailService extends NotificationHandler {
   private operationTemplates: {
     [key in TokenOperationType]: OperationEmailTemplate;
   } = {
-    [TokenOperationType.verifyAfterRegistration]: {
-      routerPath: RouterPath.VerifyEndpoint,
-      emailTemplate: VerifyEmailTemplate,
-      emailType: EmailTypes.VerifySubject,
+    [TokenOperationType.welcomeAfterRegistration]: {
+      emailTemplate: WelcomeEmailTemplate,
+      emailType: EmailTypes.VerifySubject, // otomatık verify etmiş gibi davranıyoruz
     },
     [TokenOperationType.loginAfterValidRegistration]: {
       routerPath: RouterPath.LoginEndpoint,
-      emailTemplate: VerifyEmailTemplate, // this is a example. It should be a different template
+      emailTemplate: WelcomeEmailTemplate, // this is a example. It should be a different template
       emailType: EmailTypes.VerifySubject, // this is a example. It should be a different template
     },
     [TokenOperationType.refreshToken]: {
       routerPath: RouterPath.ReNewTokenEndpoint,
-      emailTemplate: VerifyEmailTemplate, // this is a example. It should be a different template
+      emailTemplate: WelcomeEmailTemplate, // this is a example. It should be a different template
       emailType: EmailTypes.VerifySubject, // this is a example. It should be a different template
     },
   };

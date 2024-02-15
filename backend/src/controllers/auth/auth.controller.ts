@@ -21,19 +21,6 @@ export class AuthController {
     }
   };
 
-  public verifyEmailHandler = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      res.locals.data = await this.auth.verifyEmail(req.body as VerifyEmailDto);
-      next('router');
-    } catch (error: any) {
-      next(error);
-    }
-  };
-
   public loginHandler = async (
     req: Request,
     res: Response,

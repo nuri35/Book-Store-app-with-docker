@@ -1,7 +1,7 @@
 import { IMailTemplate } from '@common-types/interfaces/template.interface';
 import { Template } from '@bestnetlib/common';
 
-export class VerifyEmailTemplate extends Template {
+export class WelcomeEmailTemplate extends Template {
   constructor(private emailObj: IMailTemplate) {
     super();
   }
@@ -13,7 +13,7 @@ export class VerifyEmailTemplate extends Template {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Posta Onayı</title>
+    <title>Hoş Geldiniz</title>
     <style>
         /* Genel stiller */
         body {
@@ -45,18 +45,6 @@ export class VerifyEmailTemplate extends Template {
             margin: 10px 0;
         }
 
-        .content a {
-            display: inline-block;
-            text-decoration: none;
-            background-color: #3B82F6;
-            color: #fff;
-            border-radius: 4px;
-            padding: 16px;
-            font-size: 18px;
-            font-weight: 500;
-            margin-top: 20px;
-        }
-
         /* Altbilgi stilleri */
         .footer {
             text-align: center;
@@ -76,9 +64,8 @@ export class VerifyEmailTemplate extends Template {
 <body>
 
     <div class="content">
-        <h2>Merhaba ${this.emailObj.content.fullName},</h2>
-        <p>E-postanızı onaylamak için lütfen aşağıdaki bağlantıya tıklayın:</p>
-        <a href="${this.emailObj.content.token}">Onayla</a>
+        <h2>Hoş Geldiniz, ${this.emailObj.content.fullName}</h2>
+        <p>Bu sistemde kaydınız başarıyla oluşturuldu.</p>
         <p>Saygılarımla,<br>E-ADAM</p>
     </div>
 
@@ -86,6 +73,7 @@ export class VerifyEmailTemplate extends Template {
 </body>
 
 </html>
+
 
 
       `;

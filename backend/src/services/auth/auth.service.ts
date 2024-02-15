@@ -5,28 +5,15 @@ import { Response } from 'express';
 import { UserEntity } from '@entities/user.entity';
 import { SessionEntity } from '@entities/session.entity';
 import AuthRegisterDto from '@controllers/auth/dto/auth.register.dto';
-import { Code, Messages, ErrorCode, ErrorMessages } from '@bestnetlib/common';
+import { Code, Messages } from '@bestnetlib/common';
 import { CreatedResponse } from '@responses/created.response';
 import { TokenOperationType } from '@common-types/enums/type.enum';
 import { ElectronicMessaging } from '@notifications/index';
-import { OkResponse } from '@responses/ok.response';
 import { UserPayload } from '@common-types/interfaces/payload.interface';
-import { InvalidTokenError } from '@/responses-errors/invalid.token.error';
-import { NotFoundError } from '@/responses-errors/not.found.error';
 import AuthLoginDto from '@/controllers/auth/dto/auth.login.dto';
-import { PasswordProvider } from '@/providers/password.provider';
-import { JwtProvider } from '@/providers/jwt.provider';
 import TransformService from '@/services/conversion/data.transform';
-import VerifyEmailDto from '@/controllers/auth/dto/auth.verify.email.dto';
-// import IdentifierResDto from '@/controllers/auth/response-dto/identifier.dto';
-// import LoginResDto from '@/controllers/member/response-dto/login.dto';
-// import { MemberRepository } from '@/repositories/member/member.repository';
 import { UserRepository } from '@/repositories/user/user.repository';
-import { TokenRepository } from '@/repositories/token/token.repository';
 import IdentifierResDto from '@/controllers/auth/response-dto/identifier.dto';
-// import { SessionRepository } from '@/repositories/session/session.repository';
-// import { UserHelper } from '@/services/helper/user/user.helper';
-// import { SessionHelper } from '@/services/helper/session/session.helper';
 
 @Service()
 export class AuthService {
@@ -39,23 +26,14 @@ export class AuthService {
           const newUser = await transactionalEntityManager
             .withRepository(UserRepository)
             .customCreate(dto);
-          const newToken = await transactionalEntityManager
-            .withRepository(TokenRepository)
-            .customCreate({
-              operation: TokenOperationType.verifyAfterRegistration,
-              userId: newUser.id,
-              publicId: newUser.publicId,
-              globalDeviceName: newUser.globalDeviceName,
-            });
+
           // email... module system...
           new ElectronicMessaging({
             contact: newUser.mail,
             content: {
-              token: newToken.clientToken,
               fullName: newUser.name + ' ' + newUser.surname,
             },
-            operation:
-              newToken.operation as TokenOperationType.verifyAfterRegistration,
+            operation: TokenOperationType.welcomeAfterRegistration,
           }).load();
           const convertData = TransformService.convert<
             IdentifierResDto,
@@ -69,96 +47,6 @@ export class AuthService {
         } catch (error) {
           throw error;
         }
-      }
-    );
-  }
-
-  public async verifyEmail(dto: VerifyEmailDto) {
-    return await this.dbSource.manager.transaction(
-      async (transactionalEntityManager: EntityManager) => {
-        // Promise<OkResponse<boolean>>
-        //         let tokenObj: UserPayload;
-        //         const { token } = dto;
-        //         try {
-        //           tokenObj = JwtProvider.verifyJWT(
-        //             token,
-        //             TokenOperationType.verifyAfterRegistration
-        //           );
-        //           const tokenExist = await transactionalEntityManager
-        //             .withRepository(TokenRepository)
-        //             .findByToken(
-        //               {
-        //                 token: tokenObj.jti,
-        //                 keyPublicValue: tokenObj.id,
-        //               },
-        //               TokenOperationType.verifyAfterRegistration
-        //             );
-        //           if (!tokenExist) {
-        //             throw new NotFoundError(
-        //               ErrorCode.RECORD_NOT_FOUND,
-        //               ErrorMessages.RECORD_NOT_FOUND,
-        //               [
-        //                 {
-        //                   logCode: ErrorCode.RECORD_NOT_FOUND,
-        //                   logMessage: ErrorMessages.RECORD_NOT_FOUND,
-        //                   logData: `Opps!`,
-        //                 },
-        //               ]
-        //             );
-        //           }
-        //           const userMethod =
-        //             transactionalEntityManager.withRepository(UserRepository);
-        //           const userExist = await userMethod.findByPublicId(tokenObj.id);
-        //           const resultUp = await userMethod.customUpdate(userExist, {
-        //             rec: {
-        //               status: recStatusType.NewMember,
-        //             },
-        //             globalDeviceName: dto.deviceName,
-        //           });
-        //           await transactionalEntityManager
-        //             .withRepository(MemberRepository)
-        //             .updateByMemberStatus(
-        //               userExist.member,
-        //               resultUp.id,
-        //               recStatusType.NewMember
-        //             );
-        //           await transactionalEntityManager
-        //             .withRepository(TokenRepository)
-        //             .updateByTokenStatus(tokenExist, dto.deviceName);
-        //           return new OkResponse<boolean>(
-        //             Code.SUCCESS_UPDATE,
-        //             Messages.SUCCESS_UPDATE,
-        //             true
-        //           );
-        //         } catch (error: any) {
-        //           if (error.name === 'TokenExpiredError') {
-        //             throw new InvalidTokenError(
-        //               ErrorCode.EXPIRED_TOKEN,
-        //               ErrorMessages.EXPIRED_TOKEN,
-        //               [
-        //                 {
-        //                   logCode: ErrorCode.EXPIRED_TOKEN,
-        //                   logMessage: ErrorMessages.EXPIRED_TOKEN,
-        //                   logData: `Opps!`,
-        //                 },
-        //               ]
-        //             );
-        //           }
-        //           if (error.name === 'JsonWebTokenError') {
-        //             throw new InvalidTokenError(
-        //               ErrorCode.INVALID_TOKEN,
-        //               ErrorMessages.INVALID_TOKEN,
-        //               [
-        //                 {
-        //                   logCode: ErrorCode.INVALID_TOKEN,
-        //                   logMessage: ErrorMessages.INVALID_TOKEN,
-        //                   logData: `Opps!`,
-        //                 },
-        //               ]
-        //             );
-        //           }
-        //           throw error;
-        //         }
       }
     );
   }

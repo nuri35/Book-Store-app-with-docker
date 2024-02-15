@@ -23,7 +23,7 @@ export class UserEntity extends BaseCustomEntity {
     type: 'enum',
     enum: UserType,
     nullable: false,
-    default: UserType.NoneVerifyMember,
+    default: UserType.Admin,
   })
   type: UserType;
 
