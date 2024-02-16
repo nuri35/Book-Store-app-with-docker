@@ -88,78 +88,9 @@ If you have any question, please do not hesitate to ask.
 
 
 ## Database Schema on Authentication
-
-```mermaid
-flowchart LR
-    subgraph UserEntity
-    id1(UserEntity)
-    id2(UserType)
-    id3(name)
-    id4(publicId)
-    id5(surname)
-    id6(mail)
-    id7(login)
-    id8(password)
-    id9(I)
-    id10(userlog)
-    end
-    subgraph TokenEntity
-    id11(TokenEntity)
-    id12(clientToken)
-    id13(clientRfToken)
-    id14(token)
-    id15(operation)
-    id16(status)
-    id17(keyValue)
-    id18(keyPublicValue)
-    id19(table)
-    id20(expired)
-    end
-    subgraph SessionEntity
-    id21(SessionEntity)
-    id22(deviceName)
-    id23(deviceModel)
-    id24(status)
-    id25(user)
-    id26(token)
-    id27(tokenRf)
-    end
-    subgraph UserLogEntity
-    id28(UserLogEntity)
-    id29(deviceName)
-    id30(explanation)
-    id31(operation)
-    id32(table)
-    id33(tableKeyId)
-    id34(user)
-    end
-    id1 --> id2
-    id1 --> id3
-    id1 --> id4
-    id1 --> id5
-    id1 --> id6
-    id1 --> id7
-    id1 --> id8
-    id1 --> id9
-    id1 --> id10
-    id11 --> id12
-    id11 --> id13
-    id11 --> id14
-    id11 --> id15
-    id11 --> id16
-    id11 --> id17
-    id11 --> id18
-    id11 --> id19
-    id11 --> id20
-    id21 --> id22
-    id21 --> id23
-    id21 --> id24
-    id21 --> id25
-    id21 --> id26
-    id21 --> id27
-    id28 --> id29
-    id28 --> id30
-    id28 --> id31
-    id28 --> id32
-    id28 --> id33
-    id28 --> id34
+| Entity        | Fields                                                      | Relationships                                      |
+|---------------|-------------------------------------------------------------|----------------------------------------------------|
+| UserEntity    | id, type, name, publicId, surname, mail, login, password, I, userlog | One-to-Many with UserLogEntity, One-to-Many with SessionEntity |
+| TokenEntity   | id, clientToken, clientRfToken, token, operation, status, keyValue, keyPublicValue, table, expired | One-to-Many with SessionEntity, One-to-Many with SessionEntity |
+| SessionEntity | id, deviceName, deviceModel, status, user, token, tokenRf  | Many-to-One with UserEntity, Many-to-One with TokenEntity, Many-to-One with TokenEntity |
+| UserLogEntity | id, deviceName, explanation, operation, table, tableKeyId, user | Many-to-One with UserEntity |
