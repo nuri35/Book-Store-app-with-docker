@@ -21,6 +21,8 @@ import { OkResponse } from '@/responses/ok.response';
 import { UserHelper } from '../helper/user/user.helper';
 import LoginResDto from '@/controllers/auth/response-dto/login.dto';
 import { SessionRepository } from '@/repositories/session/session.repository';
+import { ForbiddenError } from '@/responses-errors/forbidden.error';
+import { JwtProvider } from '@/providers/jwt.provider';
 
 @Service()
 export class AuthService {
@@ -153,82 +155,61 @@ export class AuthService {
   public async reNewToken(rfTokenPayload: UserPayload, res: Response) {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
-        // const { id } = rfTokenPayload;
-        // try {
-        //   const sessionMethod =
-        //     transactionalEntityManager.withRepository(SessionRepository);
-        //   const tokenMethod =
-        //     transactionalEntityManager.withRepository(TokenRepository);
-        //   const sessionExist = await sessionMethod.rfTokenByPublicId(
-        //     rfTokenPayload
-        //   );
-        //   if (!sessionExist) {
-        //     res.clearCookie('jwt');
-        //     throw new ForbiddenError(
-        //       ErrorCode.INVALID_TOKEN,
-        //       ErrorMessages.INVALID_TOKEN,
-        //       [
-        //         {
-        //           logCode: ErrorCode.INVALID_TOKEN,
-        //           logMessage: ErrorMessages.INVALID_TOKEN,
-        //           logData: `!!!ops`,
-        //         },
-        //       ]
-        //     );
-        //   }
-        //   const result = await UserHelper.rfTokenExpiredUserCntrol(
-        //     sessionExist.user,
-        //     sessionExist,
-        //     sessionMethod,
-        //     tokenMethod
-        //   );
-        //   if (!result) {
-        //     res.clearCookie('jwt');
-        //     return new ForbiddenError(
-        //       ErrorCode.INVALID_TOKEN,
-        //       ErrorMessages.INVALID_TOKEN,
-        //       [
-        //         {
-        //           logCode: ErrorCode.INVALID_TOKEN,
-        //           logMessage: ErrorMessages.INVALID_TOKEN,
-        //           logData: `!!ops`,
-        //         },
-        //       ]
-        //     );
-        //   }
-        //   const gnValue = JwtProvider.signJWT(
-        //     id,
-        //     TokenOperationType.refreshToken
-        //   );
-        //   await tokenMethod.extendToken(
-        //     sessionExist.tokenRf,
-        //     gnValue.jwtid,
-        //     TokenOperationType.refreshToken
-        //   );
-        //   res.clearCookie('jwt');
-        //   UserHelper.startCookie(gnValue.token, res);
-        //   const tokenUpAccess = JwtProvider.signJWT(
-        //     id,
-        //     TokenOperationType.loginAfterValidRegistration
-        //   );
-        //   await tokenMethod.extendToken(
-        //     sessionExist.token,
-        //     tokenUpAccess.jwtid,
-        //     TokenOperationType.loginAfterValidRegistration
-        //   );
-        //   return new OkResponse<ReNewTokenResponse>(
-        //     Code.SUCCESS_UPDATE,
-        //     Messages.SUCCESS_UPDATE,
-        //     {
-        //       token: tokenUpAccess.token,
-        //     }
-        //   );
-        // } catch (error: any) {
-        //   throw error;
-        // }
+        const { id } = rfTokenPayload;
+        try {
+          const sessionMethod =
+            transactionalEntityManager.withRepository(SessionRepository);
+          const tokenMethod =
+            transactionalEntityManager.withRepository(TokenRepository);
+          const sessionExist = await sessionMethod.rfTokenByPublicId(
+            rfTokenPayload
+          );
+          if (!sessionExist) {
+            res.clearCookie('jwt');
+            throw new ForbiddenError(
+              ErrorCode.INVALID_TOKEN,
+              ErrorMessages.INVALID_TOKEN,
+              [
+                {
+                  logCode: ErrorCode.INVALID_TOKEN,
+                  logMessage: ErrorMessages.INVALID_TOKEN,
+                  logData: `!!!ops`,
+                },
+              ]
+            );
+          }
+
+          const gnValue = JwtProvider.signJWT(
+            id,
+            TokenOperationType.refreshToken
+          );
+          await tokenMethod.extendToken(
+            sessionExist.tokenRf,
+            gnValue.jwtid,
+            TokenOperationType.refreshToken
+          );
+          res.clearCookie('jwt');
+          UserHelper.startCookie(gnValue.token, res);
+          const tokenUpAccess = JwtProvider.signJWT(
+            id,
+            TokenOperationType.loginAfterValidRegistration
+          );
+          await tokenMethod.extendToken(
+            sessionExist.token,
+            tokenUpAccess.jwtid,
+            TokenOperationType.loginAfterValidRegistration
+          );
+          return new OkResponse<{ token: string }>(
+            Code.SUCCESS_UPDATE,
+            Messages.SUCCESS_UPDATE,
+            {
+              token: tokenUpAccess.token,
+            }
+          );
+        } catch (error: any) {
+          throw error;
+        }
       }
     );
   }
 }
-
-// bı en son login  logout ve rftoken test edılecek...

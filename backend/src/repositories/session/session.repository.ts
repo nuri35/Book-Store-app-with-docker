@@ -104,4 +104,47 @@ export const SessionRepository = DataSourceFactory.source
       sessionExist.globalDeviceName = deviceName;
       return await this.save(sessionExist);
     },
+
+    //
+
+    async rfTokenByPublicId(rfTokenPayload: UserPayload) {
+      const { id, jti } = rfTokenPayload;
+      return await this.findOne({
+        select: {
+          id: true,
+          token: {
+            id: true,
+            token: true,
+            keyValue: true,
+            expired: { date: true },
+          },
+          user: {
+            id: true,
+          },
+          tokenRf: {
+            id: true,
+            token: true,
+            keyValue: true,
+            expired: { date: true },
+          },
+        },
+        relations: {
+          tokenRf: true,
+          token: true,
+          user: true,
+        },
+        where: [
+          {
+            user: {
+              publicId: id,
+            },
+            status: SessionType.Active,
+            tokenRf: {
+              token: jti,
+              operation: TokenOperationType.refreshToken,
+            },
+          },
+        ],
+      });
+    },
   });
