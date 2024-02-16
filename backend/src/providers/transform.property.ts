@@ -3,7 +3,7 @@ export function transformProperty(value: any, propertyName?: string) {
     return false;
   }
 
-  if (propertyName === 'mail') {
+  if (propertyName === 'mail' || propertyName === 'userName') {
     return value.toLowerCase();
   }
 

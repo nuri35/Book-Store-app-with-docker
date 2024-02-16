@@ -31,6 +31,7 @@ export const UserRepository = DataSourceFactory.source
           type: true,
           publicId: true,
           password: true,
+          login: true,
           name: true,
           mail: true,
           surname: true,

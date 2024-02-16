@@ -6,6 +6,7 @@ import { UserPayload } from '@/common-types/interfaces/payload.interface';
 import {
   SessionType,
   TokenOperationType,
+  TokenUsabilityType,
 } from '@/common-types/enums/type.enum';
 
 interface TokenInfo {
@@ -142,6 +143,33 @@ export const SessionRepository = DataSourceFactory.source
             tokenRf: {
               token: jti,
               operation: TokenOperationType.refreshToken,
+            },
+          },
+        ],
+      });
+    },
+
+    async FindIsOpenSession(userId: number) {
+      return await this.findOne({
+        select: {
+          id: true,
+          deviceModel: true,
+          token: {
+            id: true,
+            token: true,
+          },
+        },
+        relations: {
+          token: true,
+        },
+        where: [
+          {
+            user: {
+              id: userId,
+            },
+            status: SessionType.Active,
+            token: {
+              status: TokenUsabilityType.Used,
             },
           },
         ],

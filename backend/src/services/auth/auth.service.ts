@@ -23,6 +23,7 @@ import LoginResDto from '@/controllers/auth/response-dto/login.dto';
 import { SessionRepository } from '@/repositories/session/session.repository';
 import { ForbiddenError } from '@/responses-errors/forbidden.error';
 import { JwtProvider } from '@/providers/jwt.provider';
+import { ConflictError } from '@/responses-errors/conflict.error';
 
 @Service()
 export class AuthService {
@@ -84,6 +85,27 @@ export class AuthService {
 
           await PasswordProvider.compare(userExist.password!, userPassword);
 
+          const sessionMethod =
+            transactionalEntityManager.withRepository(SessionRepository);
+
+          const sessionExist = await sessionMethod.FindIsOpenSession(
+            userExist.id
+          );
+
+          if (sessionExist) {
+            throw new ConflictError(
+              ErrorCode.DUBLICATE_SESSION,
+              ErrorMessages.DUBLICATE_SESSION,
+              [
+                {
+                  logCode: ErrorCode.DUBLICATE_SESSION,
+                  logMessage: ErrorMessages.DUBLICATE_SESSION,
+                  logData: `opssss`,
+                },
+              ]
+            );
+          }
+
           const tokenMethod =
             transactionalEntityManager.withRepository(TokenRepository);
 
@@ -97,8 +119,7 @@ export class AuthService {
             userId: userExist.id,
             publicId: userExist.publicId,
           });
-          const sessionMethod =
-            transactionalEntityManager.withRepository(SessionRepository);
+
           await sessionMethod.customCreate(
             userExist,
             {

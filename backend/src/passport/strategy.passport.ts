@@ -32,12 +32,9 @@ const passportStrategy = (passport: {
                 publicId: true,
                 type: true,
                 name: true,
-                app: {
-                  type: true,
-                },
                 surname: true,
+                mail: true,
                 I: {
-                  mail: true,
                   phone: true,
                   title: true,
                 },
