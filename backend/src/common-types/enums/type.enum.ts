@@ -11,6 +11,11 @@ export enum OperationType {
   Delete = 'DELETE',
 }
 
+export enum userLoginType {
+  CanLogin = 0,
+  CantLogin = 1,
+}
+
 export enum TokenOperationType {
   welcomeAfterRegistration = 'welcome',
   loginAfterValidRegistration = 'login',

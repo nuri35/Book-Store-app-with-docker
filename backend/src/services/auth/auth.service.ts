@@ -5,7 +5,7 @@ import { Response } from 'express';
 import { UserEntity } from '@entities/user.entity';
 import { SessionEntity } from '@entities/session.entity';
 import AuthRegisterDto from '@controllers/auth/dto/auth.register.dto';
-import { Code, Messages } from '@bestnetlib/common';
+import { Code, ErrorCode, ErrorMessages, Messages } from '@bestnetlib/common';
 import { CreatedResponse } from '@responses/created.response';
 import { TokenOperationType } from '@common-types/enums/type.enum';
 import { ElectronicMessaging } from '@notifications/index';
@@ -14,6 +14,12 @@ import AuthLoginDto from '@/controllers/auth/dto/auth.login.dto';
 import TransformService from '@/services/conversion/data.transform';
 import { UserRepository } from '@/repositories/user/user.repository';
 import IdentifierResDto from '@/controllers/auth/response-dto/identifier.dto';
+import { NotFoundError } from '@/responses-errors/not.found.error';
+import { PasswordProvider } from '@/providers/password.provider';
+import { TokenRepository } from '@/repositories/token/token.repository';
+import { OkResponse } from '@/responses/ok.response';
+import { UserHelper } from '../helper/user/user.helper';
+import LoginResDto from '@/controllers/auth/response-dto/login.dto';
 
 @Service()
 export class AuthService {
@@ -54,80 +60,55 @@ export class AuthService {
   public async login(dto: AuthLoginDto, res: Response) {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
-        // Promise<OkResponse<LoginResDto>>
-        //     const { userPassword, identifierField } = dto;
-        //     try {
-        //       const userMethod =
-        //         transactionalEntityManager.withRepository(UserRepository);
-        //       const userExist = await userMethod.findOneIdtaxNumber(
-        //         identifierField
-        //       );
-        //       if (!userExist) {
-        //         throw new NotFoundError(
-        //           ErrorCode.INVALID_USERID,
-        //           ErrorMessages.INVALID_USERID,
-        //           [
-        //             {
-        //               logCode: ErrorCode.INVALID_USERID,
-        //               logMessage: ErrorMessages.INVALID_USERID,
-        //               logData: `${identifierField}`,
-        //             },
-        //           ]
-        //         );
-        //       }
-        //       UserHelper.controlLogicExpireDate(userExist);
-        //       await PasswordProvider.compare(userExist.password!, userPassword);
-        //       const sessionMethod =
-        //         transactionalEntityManager.withRepository(SessionRepository);
-        //       const sessionExist = await sessionMethod.FindIsOpenSession(
-        //         userExist.id
-        //       );
-        //       if (sessionExist) {
-        //         SessionHelper.warningOpenSession(
-        //           sessionExist,
-        //           userExist,
-        //           dto.deviceName
-        //         );
-        //       }
-        //       const tokenMethod =
-        //         transactionalEntityManager.withRepository(TokenRepository);
-        //       const tokenInstance = await tokenMethod.customCreate({
-        //         operation: TokenOperationType.loginAfterValidRegistration,
-        //         userId: userExist.id,
-        //         memberId: userExist.member.id,
-        //         publicId: userExist.publicId,
-        //         app: userExist.app,
-        //       });
-        //       const tokenInstanceRf = await tokenMethod.customCreate({
-        //         operation: TokenOperationType.refreshToken,
-        //         userId: userExist.id,
-        //         memberId: userExist.member.id,
-        //         publicId: userExist.publicId,
-        //         app: userExist.app,
-        //       });
-        //       await sessionMethod.customCreate(
-        //         userExist,
-        //         {
-        //           tokenInstance,
-        //           tokenInstanceRf,
-        //         },
-        //         dto.deviceName,
-        //         dto.deviceModel
-        //       );
-        //       UserHelper.startCookie(tokenInstanceRf.clientRfToken, res);
-        //       const convertData = TransformService.convert<LoginResDto, UserEntity>(
-        //         userExist,
-        //         LoginResDto,
-        //         'excludeAll'
-        //       ).addCustomProperty('token', tokenInstance.clientToken);
-        //       return new OkResponse<LoginResDto>(
-        //         Code.SUCCESS,
-        //         Messages.SUCCESS,
-        //         convertData
-        //       );
-        //     } catch (error) {
-        //       throw error;
-        //     }
+        const { userPassword, userName } = dto;
+        try {
+          const userMethod =
+            transactionalEntityManager.withRepository(UserRepository);
+          const userExist = await userMethod.findOneByUserName(userName);
+          if (!userExist) {
+            throw new NotFoundError(
+              ErrorCode.INVALID_USERID,
+              ErrorMessages.INVALID_USERID,
+              [
+                {
+                  logCode: ErrorCode.INVALID_USERID,
+                  logMessage: ErrorMessages.INVALID_USERID,
+                  logData: `${userName}`,
+                },
+              ]
+            );
+          }
+
+          await PasswordProvider.compare(userExist.password!, userPassword);
+
+          const tokenMethod =
+            transactionalEntityManager.withRepository(TokenRepository);
+
+          const tokenInstance = await tokenMethod.customCreate({
+            operation: TokenOperationType.loginAfterValidRegistration,
+            userId: userExist.id,
+            publicId: userExist.publicId,
+          });
+          const tokenInstanceRf = await tokenMethod.customCreate({
+            operation: TokenOperationType.refreshToken,
+            userId: userExist.id,
+            publicId: userExist.publicId,
+          });
+
+          UserHelper.startCookie(tokenInstanceRf.clientRfToken, res);
+          const convertData = TransformService.convert<LoginResDto, UserEntity>(
+            userExist,
+            LoginResDto,
+            'excludeAll'
+          ).addCustomProperty('token', tokenInstance.clientToken);
+          return new OkResponse<LoginResDto>(
+            Code.SUCCESS,
+            Messages.SUCCESS,
+            convertData
+          );
+        } catch (error) {
+          throw error;
+        }
       }
     );
   }

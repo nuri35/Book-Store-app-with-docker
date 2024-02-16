@@ -2,6 +2,7 @@ import { IUserCreationData } from '@/common-types/interfaces/repo.interface';
 import { UserEntity } from '@/entities/user.entity';
 import DataSourceFactory from '@source/data.source';
 import { HelperRepo } from '../helper-repo';
+import { userLoginType } from '@/common-types/enums/type.enum';
 
 export const UserRepository = DataSourceFactory.source
   .getRepository(UserEntity)
@@ -21,5 +22,29 @@ export const UserRepository = DataSourceFactory.source
       });
       userInstance.executor = currentUserId;
       return await this.save(userInstance);
+    },
+
+    async findOneByUserName(userName: string): Promise<UserEntity | null> {
+      return await this.findOne({
+        select: {
+          id: true,
+          type: true,
+          publicId: true,
+          password: true,
+          name: true,
+          mail: true,
+          surname: true,
+          I: {
+            phone: true,
+            title: true,
+          },
+        },
+        where: [
+          {
+            mail: userName,
+            login: userLoginType.CanLogin,
+          },
+        ],
+      });
     },
   });

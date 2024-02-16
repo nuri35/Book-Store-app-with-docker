@@ -8,7 +8,7 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { BaseCustomEntity } from '@entities/base.entity';
-import { UserType } from '@common-types/enums/type.enum';
+import { UserType, userLoginType } from '@common-types/enums/type.enum';
 import { UserLogEntity } from '@/entities/user.log.entity';
 import { SessionEntity } from '@entities/session.entity';
 import { Exclude } from 'class-transformer';
@@ -46,6 +46,14 @@ export class UserEntity extends BaseCustomEntity {
 
   @Column()
   mail: string;
+
+  @Column({
+    type: 'enum',
+    enum: userLoginType,
+    nullable: false,
+    default: userLoginType.CanLogin,
+  })
+  login: userLoginType;
 
   @Exclude()
   @Column()
