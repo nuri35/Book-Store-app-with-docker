@@ -23,6 +23,9 @@ class LoginResDto {
   name: string;
 
   @Expose()
+  mail: string;
+
+  @Expose()
   surname: string;
 
   @Expose()

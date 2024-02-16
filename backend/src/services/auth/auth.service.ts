@@ -20,6 +20,7 @@ import { TokenRepository } from '@/repositories/token/token.repository';
 import { OkResponse } from '@/responses/ok.response';
 import { UserHelper } from '../helper/user/user.helper';
 import LoginResDto from '@/controllers/auth/response-dto/login.dto';
+import { SessionRepository } from '@/repositories/session/session.repository';
 
 @Service()
 export class AuthService {
@@ -94,6 +95,17 @@ export class AuthService {
             userId: userExist.id,
             publicId: userExist.publicId,
           });
+          const sessionMethod =
+            transactionalEntityManager.withRepository(SessionRepository);
+          await sessionMethod.customCreate(
+            userExist,
+            {
+              tokenInstance,
+              tokenInstanceRf,
+            },
+            dto.deviceName,
+            dto.deviceModel
+          );
 
           UserHelper.startCookie(tokenInstanceRf.clientRfToken, res);
           const convertData = TransformService.convert<LoginResDto, UserEntity>(

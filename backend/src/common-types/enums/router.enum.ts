@@ -4,7 +4,6 @@ export enum RouterLabel {
 
 export enum RouterPath {
   RegisterEndpoint = 'register',
-  VerifyEndpoint = 'verify',
   LoginEndpoint = 'login',
   LogoutEndpoint = 'logout',
   ReNewTokenEndpoint = 'refreshToken',
