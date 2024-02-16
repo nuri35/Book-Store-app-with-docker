@@ -128,24 +128,24 @@ export class AuthService {
   public async logOut(currentSession: SessionEntity, res: Response) {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
-        // try {
-        //   const sessionMethod =
-        //     transactionalEntityManager.withRepository(SessionRepository);
-        //   const sessionExist = await sessionMethod.findByCurrentSessionId(
-        //     currentSession.id
-        //   );
-        //   await sessionMethod.updateBySessionStatus(sessionExist);
-        //   await transactionalEntityManager
-        //     .withRepository(TokenRepository)
-        //     .updateByTokenStatus(sessionExist.token);
-        //   await transactionalEntityManager
-        //     .withRepository(TokenRepository)
-        //     .updateByTokenStatus(sessionExist.tokenRf);
-        //   res.clearCookie('jwt');
-        //   return new OkResponse<boolean>(Code.SUCCESS, Messages.SUCCESS, true);
-        // } catch (error) {
-        //   throw error;
-        // }
+        try {
+          const sessionMethod =
+            transactionalEntityManager.withRepository(SessionRepository);
+          const sessionExist = await sessionMethod.findByCurrentSessionId(
+            currentSession.id
+          );
+          await sessionMethod.updateBySessionStatus(sessionExist);
+          await transactionalEntityManager
+            .withRepository(TokenRepository)
+            .updateByTokenStatus(sessionExist.token);
+          await transactionalEntityManager
+            .withRepository(TokenRepository)
+            .updateByTokenStatus(sessionExist.tokenRf);
+          res.clearCookie('jwt');
+          return new OkResponse<boolean>(Code.SUCCESS, Messages.SUCCESS, true);
+        } catch (error) {
+          throw error;
+        }
       }
     );
   }
@@ -230,3 +230,5 @@ export class AuthService {
     );
   }
 }
+
+// bı en son login  logout ve rftoken test edılecek...
