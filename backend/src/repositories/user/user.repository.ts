@@ -11,12 +11,13 @@ export const UserRepository = DataSourceFactory.source
       addedFields: IUserCreationData,
       currentUserId?: number
     ): Promise<UserEntity> {
-      const { name, surname, password, mail, phone, title } = addedFields;
+      const { name, surname, password, mail, phone, title, type } = addedFields;
 
       const userInstance = this.create({
         name,
         surname,
         password,
+        type,
         mail,
         I: HelperRepo.humanCreate({ phone, title }),
       });

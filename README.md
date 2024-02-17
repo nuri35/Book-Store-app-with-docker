@@ -94,3 +94,6 @@ If you have any question, please do not hesitate to ask.
 | TokenEntity   | id, clientToken, clientRfToken, token, operation, status, keyValue, keyPublicValue, table, expired | One-to-Many with SessionEntity, One-to-Many with SessionEntity |
 | SessionEntity | id, deviceName, deviceModel, status, user, token, tokenRf  | Many-to-One with UserEntity, Many-to-One with TokenEntity, Many-to-One with TokenEntity |
 | UserLogEntity | id, deviceName, explanation, operation, table, tableKeyId, user | Many-to-One with UserEntity |
+
+
+ 

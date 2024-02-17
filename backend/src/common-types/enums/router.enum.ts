@@ -1,5 +1,6 @@
 export enum RouterLabel {
   Auth = 'auth',
+  User = 'user',
 }
 
 export enum RouterPath {

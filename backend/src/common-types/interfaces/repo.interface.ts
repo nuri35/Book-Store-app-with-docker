@@ -1,9 +1,10 @@
-import { TokenOperationType } from '../enums/type.enum';
+import { TokenOperationType, UserType } from '../enums/type.enum';
 
 export interface IUserCreationData {
   name: string;
   surname: string;
   password: string;
+  type?: UserType;
   mail: string;
   phone: string;
   title?: string;
