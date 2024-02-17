@@ -4,7 +4,7 @@ import DataSourceFactory from '@source/data.source';
 import { EntityManager } from 'typeorm';
 import BookStoreCreateDto from '@/controllers/book/dto/book.create.dto';
 import { BookEntity } from '@/entities/book.entity';
-import { StoreEntity } from '@/entities/book.store.entity';
+import { StoreEntity } from '@/entities/store.entity';
 
 @Service()
 export class BookManagerService {
