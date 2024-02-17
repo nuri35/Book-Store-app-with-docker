@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import { Container } from 'typedi';
 import { AuthService } from '@services/auth/auth.service';
 import AuthRegisterDto from '@controllers/auth/dto/auth.register.dto';
-import VerifyEmailDto from '@controllers/auth/dto/auth.verify.email.dto';
 import AuthLoginDto from '@controllers/auth/dto/auth.login.dto';
 
 export class AuthController {
