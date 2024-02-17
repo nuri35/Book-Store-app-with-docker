@@ -5,7 +5,7 @@ import { EntityManager } from 'typeorm';
 import UserCreateDto from '@controllers/user/dto/user.create.dto';
 import { UserEntity } from '@entities/user.entity';
 import { UserRepository } from '@/repositories/user/user.repository';
-import TransformService from '../conversion/data.transform';
+import TransformService from '../help-service/conversion/data.transform';
 import InitialResDto from '@/controllers/user/response-dto/initial.dto';
 import { CreatedResponse } from '@/responses/created.response';
 import { Code, Messages } from '@bestnetlib/common';
@@ -42,3 +42,5 @@ export class UserService {
     );
   }
 }
+
+//todo test edılecke....

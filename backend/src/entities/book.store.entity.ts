@@ -1,12 +1,13 @@
-import { Entity, Column, ManyToOne } from 'typeorm';
+import { Entity, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 import { BaseCustomEntity } from '@entities/base.entity';
 import { UserEntity } from '@entities/user.entity';
+import { BookEntity } from '@entities/book.entity';
 
 @Entity()
-export class UserLogEntity extends BaseCustomEntity {
-  @ManyToOne(() => UserEntity, (user) => user.userlog, {
-    eager: false,
-    nullable: false,
-  })
-  user: UserEntity;
+export class BookStoreEntity extends BaseCustomEntity {
+  //
+
+  @ManyToMany(() => BookEntity, (book) => book.bookstores)
+  @JoinTable()
+  books: BookEntity[];
 }

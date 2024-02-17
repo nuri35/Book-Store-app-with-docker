@@ -1,7 +1,6 @@
 import { DataSource } from 'typeorm';
 import { EnvResult } from '@bestnetlib/common';
 import { EveryEventSubscriber } from '@/entities/subscribers/every.event.subscriber';
-import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 class DataSourceFactory {
   private Isource: DataSource;
@@ -22,7 +21,6 @@ class DataSourceFactory {
       entities: ['src/entities/**/*{entity.ts,entity.js}'],
       logging: process.env.NODE_ENV === EnvResult.dev ? true : false,
       subscribers: [EveryEventSubscriber],
-      namingStrategy: new SnakeNamingStrategy(),
     });
   }
 }
