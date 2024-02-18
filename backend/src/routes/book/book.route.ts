@@ -46,7 +46,7 @@ export class BookManagerRoute implements Routes {
       ValidationMiddleware(BookCreateDto),
       this.bookManager.createBookHandler
     );
-
+    //belirli bir kitabı belirli bir kıtapcıya belirli bir mıktarda ekleme durumu
     this.router.post(
       `${this.path}${RouterPath.StockEndpoint}`,
       Is.loggedIn,
@@ -54,5 +54,13 @@ export class BookManagerRoute implements Routes {
       ValidationMiddleware(AddStockDto),
       this.bookManager.addStockHandler
     );
+
+    // this.router.post(
+    //   `${this.path}${RouterPath.StockEndpoint}`,
+    //   Is.loggedIn,
+    //   Is.hasPermission(UserType.Admin),
+    //   ValidationMiddleware(AddStockDto),
+    //   this.bookManager.addStockHandler
+    // );
   }
 }

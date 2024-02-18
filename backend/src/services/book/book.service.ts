@@ -18,6 +18,7 @@ import { NotFoundError } from '@/responses-errors/not.found.error';
 import { OkResponse } from '@/responses/ok.response';
 import { BookToStoreEntity } from '@/entities/book.to.store.entity';
 import { BookToStoreRepository } from '@/repositories/book/book.to.store.repository';
+import BookToStoreResDto from '@/controllers/book/response-dto/book.to.store.dto';
 
 @Service()
 export class BookManagerService {
@@ -83,6 +84,7 @@ export class BookManagerService {
   public addStock = async (dto: AddStockDto, req: Request) => {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
+        let result: BookToStoreEntity;
         try {
           const storeMethod = await transactionalEntityManager.withRepository(
             StoreRepository
@@ -116,7 +118,7 @@ export class BookManagerService {
           );
 
           if (!bookToStore) {
-            await bookToStoreMethod.customCreate(
+            result = await bookToStoreMethod.customCreate(
               dto,
               req.currentSession!.user.id
             );
@@ -124,13 +126,19 @@ export class BookManagerService {
             bookToStore.quantity += dto.quantity;
             bookToStore.executor = req.currentSession!.user.id;
             await transactionalEntityManager.save(bookToStore);
+            result = bookToStore;
           }
 
-          return new OkResponse<boolean>(
-            Code.SUCCESS_UPDATE,
-            Messages.SUCCESS_UPDATE,
-            true
-          ); // testıng
+          const convertData = TransformService.convert<
+            BookToStoreResDto,
+            BookToStoreEntity
+          >(result, BookToStoreResDto, 'excludeAll');
+
+          return new OkResponse<BookToStoreResDto>(
+            Code.SUCCESS_CREATE,
+            Messages.SUCCESS_CREATE,
+            convertData
+          );
         } catch (error) {
           throw error;
         }

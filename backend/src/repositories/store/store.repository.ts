@@ -24,9 +24,6 @@ export const StoreRepository = DataSourceFactory.source
       return await this.findOne({
         select: {
           id: true,
-          name: true,
-          address: true,
-          phoneNumber: true,
         },
         where: {
           id,
