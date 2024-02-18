@@ -1,4 +1,4 @@
-import { TokenOperationType, UserType } from '../enums/type.enum';
+import { TokenOperationType, UserType, GenreType } from '../enums/type.enum';
 
 export interface IUserCreationData {
   name: string;
@@ -10,9 +10,23 @@ export interface IUserCreationData {
   title?: string;
 }
 
+export interface IStoreCreationData {
+  name: string;
+  address: string;
+  phoneNumber: string;
+}
+
 export interface ITokenCreationData {
   operation: TokenOperationType;
   userId: number;
   publicId: number;
   globalDeviceName?: string;
+}
+
+export interface IBookCreationData {
+  title: string;
+  author: string;
+  publicationYear: number;
+  ISBN: string;
+  genre: GenreType;
 }

@@ -4,8 +4,9 @@ import { Routes } from '@common-types/interfaces/routes.interface';
 import { RouterLabel, RouterPath } from '@common-types/enums/router.enum';
 import { Is } from '@middlewares/auth.middleware';
 import { UserType } from '@/common-types/enums/type.enum';
-import BookStoreCreateDto from '@/controllers/book/dto/book.create.dto';
+import BookStoreCreateDto from '@/controllers/book/dto/store.create.dto';
 import { BookManagerController } from '@/controllers/book/book.controller';
+import BookCreateDto from '@/controllers/book/dto/book.create.dto';
 
 export class BookManagerRoute implements Routes {
   private static instance: BookManagerRoute;
@@ -35,6 +36,14 @@ export class BookManagerRoute implements Routes {
       Is.hasPermission(UserType.Admin),
       ValidationMiddleware(BookStoreCreateDto),
       this.bookManager.createBookStoreHandler
+    );
+
+    this.router.post(
+      `${this.path}${RouterPath.BookEndpoint}`,
+      Is.loggedIn,
+      Is.hasPermission(UserType.Admin),
+      ValidationMiddleware(BookCreateDto),
+      this.bookManager.createBookHandler
     );
   }
 }

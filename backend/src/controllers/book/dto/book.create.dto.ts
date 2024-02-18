@@ -1,11 +1,27 @@
-import { UserType } from '@/common-types/enums/type.enum';
-import {
-  IsCustomPhoneNumberFormat,
-  IsSixDigitNumber,
-} from '@/decorators/validation.decorators';
-import { transformProperty } from '@/providers/transform.property';
-import { Transform } from 'class-transformer';
-import { IsEmail, IsEnum, IsString, Length } from 'class-validator';
+import { IsCustomPhoneNumberFormat } from '@/decorators/validation.decorators';
+import { IsEnum, IsString, Length, IsNumber } from 'class-validator';
+import { GenreType } from '@/common-types/enums/type.enum';
 
-class BookStoreCreateDto {}
-export default BookStoreCreateDto;
+class BookCreateDto {
+  @IsString()
+  @Length(3, 50)
+  title: string;
+
+  @IsString()
+  @Length(3, 50)
+  author: string;
+
+  @IsNumber()
+  publicationYear: number;
+
+  @IsString()
+  @Length(10, 13)
+  ISBN: string;
+
+  @IsEnum(GenreType)
+  genre: GenreType;
+
+  @IsNumber()
+  storeId: number;
+}
+export default BookCreateDto;

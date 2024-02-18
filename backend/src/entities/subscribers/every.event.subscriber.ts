@@ -7,9 +7,11 @@ import { BadRequestError } from '@/responses-errors/bad.request.error';
 import { ErrorCode, ErrorMessages, Messages } from '@bestnetlib/common';
 import { EntityName } from '@/common-types/enums/entity.enum';
 import { UserEntity } from '../user.entity';
+import { StoreEntity } from '@/entities/store.entity';
 import { OperationType } from '@/common-types/enums/type.enum';
 import { CreateLogData } from '@/logger/services/create.log.data';
 import { Db } from '@logger/services/db.log';
+import { BookEntity } from '../book.entity';
 
 @EventSubscriber()
 export class EveryEventSubscriber implements EntitySubscriberInterface<any> {
@@ -30,6 +32,47 @@ export class EveryEventSubscriber implements EntitySubscriberInterface<any> {
               {
                 logCode: ErrorCode.DUBLICATE_ACCOUNT,
                 logMessage: ErrorMessages.DUBLICATE_ACCOUNT,
+                logData: `oppppss`,
+              },
+            ]
+          );
+        }
+      }
+      // bookStore control
+
+      if (metadata.tableName === EntityName.Store) {
+        const store = await transactionalManager.findOne(StoreEntity, {
+          where: { phoneNumber: entity.phoneNumber },
+        });
+
+        if (store) {
+          throw new BadRequestError(
+            ErrorCode.RECORD_NOT_FOUND,
+            ErrorMessages.DUBLICATE_RECORD,
+            [
+              {
+                logCode: ErrorCode.RECORD_NOT_FOUND,
+                logMessage: ErrorMessages.DUBLICATE_RECORD,
+                logData: `oppppss`,
+              },
+            ]
+          );
+        }
+      }
+      // book control
+      if (metadata.tableName === EntityName.Book) {
+        const book = await transactionalManager.findOne(BookEntity, {
+          where: { ISBN: entity.ISBN },
+        });
+
+        if (book) {
+          throw new BadRequestError(
+            ErrorCode.RECORD_NOT_FOUND,
+            ErrorMessages.DUBLICATE_RECORD,
+            [
+              {
+                logCode: ErrorCode.RECORD_NOT_FOUND,
+                logMessage: ErrorMessages.DUBLICATE_RECORD,
                 logData: `oppppss`,
               },
             ]

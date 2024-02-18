@@ -1,7 +1,8 @@
-import { Entity, Column, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, Unique } from 'typeorm';
 import { BaseCustomEntity } from '@entities/base.entity';
 
 @Entity()
+@Unique(['phoneNumber'])
 export class StoreEntity extends BaseCustomEntity {
   //
 
@@ -13,7 +14,4 @@ export class StoreEntity extends BaseCustomEntity {
 
   @Column()
   phoneNumber: string;
-
-  @Column()
-  openingHours: string;
 }

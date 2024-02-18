@@ -3,4 +3,6 @@ export enum EntityName {
   UserLogs = 'user_log_entity',
   Token = 'token_entity',
   Session = 'session_entity',
+  Store = 'store_entity',
+  Book = 'book_entity',
 }
