@@ -9,6 +9,7 @@ export enum RouterPath {
   LoginEndpoint = 'login',
   BookStoreEndpoint = 'bookstore',
   BookEndpoint = 'book',
+  StockEndpoint = 'stock',
   LogoutEndpoint = 'logout',
   ReNewTokenEndpoint = 'refreshToken',
 }

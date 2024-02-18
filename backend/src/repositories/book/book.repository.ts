@@ -6,11 +6,7 @@ import DataSourceFactory from '@source/data.source';
 export const BookRepository = DataSourceFactory.source
   .getRepository(BookEntity)
   .extend({
-    async customCreate(
-      addedFields: IBookCreationData,
-      store: StoreEntity,
-      currentUserId?: number
-    ) {
+    async customCreate(addedFields: IBookCreationData, currentUserId?: number) {
       const { title, author, publicationYear, ISBN, genre } = addedFields;
 
       const bookInstance = this.create({
@@ -19,9 +15,24 @@ export const BookRepository = DataSourceFactory.source
         publicationYear,
         ISBN,
         genre,
-        stores: [store],
       });
       bookInstance.executor = currentUserId;
       return await this.save(bookInstance);
+    },
+
+    async customFindOne(id: number) {
+      return await this.findOne({
+        select: {
+          id: true,
+          title: true,
+          author: true,
+          publicationYear: true,
+          ISBN: true,
+          genre: true,
+        },
+        where: {
+          id,
+        },
+      });
     },
   });

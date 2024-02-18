@@ -10,7 +10,14 @@ import BookCreateDto from '@/controllers/book/dto/book.create.dto';
 import { StoreEntity } from '@/entities/store.entity';
 import { Code, ErrorCode, ErrorMessages, Messages } from '@bestnetlib/common';
 import { BookEntity } from '@/entities/book.entity';
+import StoreResDto from '@/controllers/book/response-dto/store.create.dto';
+import BookCreateResDto from '@/controllers/book/response-dto/book.create.dto';
+import TransformService from '../help-service/conversion/data.transform';
+import AddStockDto from '@/controllers/book/dto/add.stock.dto';
 import { NotFoundError } from '@/responses-errors/not.found.error';
+import { OkResponse } from '@/responses/ok.response';
+import { BookToStoreEntity } from '@/entities/book.to.store.entity';
+import { BookToStoreRepository } from '@/repositories/book/book.to.store.repository';
 
 @Service()
 export class BookManagerService {
@@ -19,7 +26,7 @@ export class BookManagerService {
   public async createBookStore(
     dto: BookStoreCreateDto,
     req: Request
-  ): Promise<CreatedResponse<StoreEntity>> {
+  ): Promise<CreatedResponse<StoreResDto>> {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
         try {
@@ -30,11 +37,14 @@ export class BookManagerService {
             dto,
             req.currentSession!.user.id
           );
-
-          return new CreatedResponse<StoreEntity>(
+          const convertData = TransformService.convert<
+            StoreResDto,
+            StoreEntity
+          >(resultStore, StoreResDto, 'excludeAll');
+          return new CreatedResponse<StoreResDto>(
             Code.SUCCESS_CREATE,
             Messages.SUCCESS_CREATE,
-            resultStore
+            convertData
           );
         } catch (error) {
           throw error;
@@ -42,42 +52,26 @@ export class BookManagerService {
       }
     );
   }
-  //? bu service'lerin içerisinde event-subscriber'lar çalışıyor.... oncesınde findOne metotu calısıp sonrasındada user log tablosuna kayıt ediliyor.....
+
   public createBook = async (dto: BookCreateDto, req: Request) => {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
         try {
-          const storeMethod = await transactionalEntityManager.withRepository(
-            StoreRepository
-          );
-          const store = await storeMethod.customFindOne(dto.storeId);
-
-          if (!store) {
-            throw new NotFoundError(
-              ErrorCode.RECORD_NOT_FOUND,
-              ErrorMessages.RECORD_NOT_FOUND,
-              [
-                {
-                  logCode: ErrorCode.RECORD_NOT_FOUND,
-                  logMessage: ErrorMessages.RECORD_NOT_FOUND,
-                  logData: `opsss`,
-                },
-              ]
-            );
-          }
-
           const bookMethod = await transactionalEntityManager.withRepository(
             BookRepository
           );
           const resultBook = await bookMethod.customCreate(
             dto,
-            store,
             req.currentSession!.user.id
           );
-          return new CreatedResponse<BookEntity>(
+          const convertData = TransformService.convert<
+            BookCreateResDto,
+            BookEntity
+          >(resultBook, BookCreateResDto, 'excludeAll');
+          return new CreatedResponse<BookCreateResDto>(
             Code.SUCCESS_CREATE,
             Messages.SUCCESS_CREATE,
-            resultBook
+            convertData
           );
         } catch (error) {
           throw error;
@@ -85,4 +79,63 @@ export class BookManagerService {
       }
     );
   };
+
+  public addStock = async (dto: AddStockDto, req: Request) => {
+    return await this.dbSource.manager.transaction(
+      async (transactionalEntityManager: EntityManager) => {
+        try {
+          const storeMethod = await transactionalEntityManager.withRepository(
+            StoreRepository
+          );
+          const bookMethod = await transactionalEntityManager.withRepository(
+            BookRepository
+          );
+          const bookToStoreMethod =
+            await transactionalEntityManager.withRepository(
+              BookToStoreRepository
+            );
+          const resultStore = await storeMethod.customFindOne(dto.storeId);
+          const resultBook = await bookMethod.customFindOne(dto.bookId);
+          if (!resultStore || !resultBook) {
+            throw new NotFoundError(
+              ErrorCode.RECORD_NOT_FOUND,
+              ErrorMessages.RECORD_NOT_FOUND,
+              [
+                {
+                  logCode: ErrorCode.RECORD_NOT_FOUND,
+                  logMessage: ErrorMessages.RECORD_NOT_FOUND,
+                  logData: `opssss`,
+                },
+              ]
+            );
+          }
+          // booktosotre control
+          const bookToStore = await bookToStoreMethod.customFindOne(
+            dto.storeId,
+            dto.bookId
+          );
+
+          if (!bookToStore) {
+            await bookToStoreMethod.customCreate(
+              dto,
+              req.currentSession!.user.id
+            );
+          } else {
+            bookToStore.quantity += dto.quantity;
+            bookToStore.executor = req.currentSession!.user.id;
+            await transactionalEntityManager.save(bookToStore);
+          }
+
+          return new OkResponse<boolean>(
+            Code.SUCCESS_UPDATE,
+            Messages.SUCCESS_UPDATE,
+            true
+          ); // testıng
+        } catch (error) {
+          throw error;
+        }
+      }
+    );
+  };
 }
+// bu endpoint'De okey... gozden gecırısın en son 1 saat sonra ondan sonra dırek remove etmeyı halledersın.

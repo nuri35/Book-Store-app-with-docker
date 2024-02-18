@@ -21,7 +21,7 @@ class BookCreateDto {
   @IsEnum(GenreType)
   genre: GenreType;
 
-  @IsNumber()
-  storeId: number;
+  // @IsNumber()
+  // storeId: number;
 }
 export default BookCreateDto;

@@ -1,5 +1,6 @@
-import { Entity, Column, Unique } from 'typeorm';
+import { Entity, Column, Unique, OneToMany } from 'typeorm';
 import { BaseCustomEntity } from '@entities/base.entity';
+import { BookToStoreEntity } from './book.to.store.entity';
 
 @Entity()
 @Unique(['phoneNumber'])
@@ -14,4 +15,7 @@ export class StoreEntity extends BaseCustomEntity {
 
   @Column()
   phoneNumber: string;
+
+  @OneToMany(() => BookToStoreEntity, (bookToStore) => bookToStore.store)
+  public bookToStores: BookToStoreEntity[];
 }

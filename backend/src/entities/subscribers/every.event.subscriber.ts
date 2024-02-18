@@ -38,7 +38,6 @@ export class EveryEventSubscriber implements EntitySubscriberInterface<any> {
           );
         }
       }
-      // bookStore control
 
       if (metadata.tableName === EntityName.Store) {
         const store = await transactionalManager.findOne(StoreEntity, {

@@ -33,14 +33,14 @@ export enum TokenUsabilityType {
 }
 
 export enum GenreType {
-  Fiction = 'Fiction',
-  NonFiction = 'Non-Fiction',
-  Mystery = 'Mystery',
-  Romance = 'Romance',
-  ScienceFiction = 'Science Fiction',
-  Biography = 'Biography',
-  History = 'History',
-  Poetry = 'Poetry',
-  Fantasy = 'Fantasy',
-  Other = 'Other',
+  Fiction = 0,
+  NonFiction = 1,
+  Mystery = 2,
+  Romance = 3,
+  ScienceFiction = 4,
+  Biography = 5,
+  History = 6,
+  Poetry = 7,
+  Fantasy = 8,
+  Other = 9,
 }

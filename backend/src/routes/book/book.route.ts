@@ -6,6 +6,7 @@ import { Is } from '@middlewares/auth.middleware';
 import { UserType } from '@/common-types/enums/type.enum';
 import BookStoreCreateDto from '@/controllers/book/dto/store.create.dto';
 import { BookManagerController } from '@/controllers/book/book.controller';
+import AddStockDto from '@/controllers/book/dto/add.stock.dto';
 import BookCreateDto from '@/controllers/book/dto/book.create.dto';
 
 export class BookManagerRoute implements Routes {
@@ -44,6 +45,14 @@ export class BookManagerRoute implements Routes {
       Is.hasPermission(UserType.Admin),
       ValidationMiddleware(BookCreateDto),
       this.bookManager.createBookHandler
+    );
+
+    this.router.post(
+      `${this.path}${RouterPath.StockEndpoint}`,
+      Is.loggedIn,
+      Is.hasPermission(UserType.Admin),
+      ValidationMiddleware(AddStockDto),
+      this.bookManager.addStockHandler
     );
   }
 }

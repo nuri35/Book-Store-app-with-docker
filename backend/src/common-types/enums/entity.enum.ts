@@ -5,4 +5,6 @@ export enum EntityName {
   Session = 'session_entity',
   Store = 'store_entity',
   Book = 'book_entity',
+  BookToStore = 'book_to_store_entity',
 }
+// book_to_store_entity;

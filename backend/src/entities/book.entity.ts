@@ -1,7 +1,8 @@
-import { Entity, Column, ManyToMany, JoinTable, Unique } from 'typeorm';
+import { Entity, Column, Unique, OneToMany } from 'typeorm';
 import { BaseCustomEntity } from '@entities/base.entity';
-import { StoreEntity } from '@/entities/store.entity';
+
 import { GenreType } from '@/common-types/enums/type.enum';
+import { BookToStoreEntity } from './book.to.store.entity';
 
 @Entity()
 @Unique(['ISBN'])
@@ -25,7 +26,6 @@ export class BookEntity extends BaseCustomEntity {
   })
   genre: GenreType;
 
-  @ManyToMany(() => StoreEntity)
-  @JoinTable()
-  stores: StoreEntity[];
+  @OneToMany(() => BookToStoreEntity, (bookToStore) => bookToStore.book)
+  public bookToStores: BookToStoreEntity[];
 }
