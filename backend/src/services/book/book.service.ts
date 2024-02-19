@@ -19,6 +19,7 @@ import { OkResponse } from '@/responses/ok.response';
 import { BookToStoreEntity } from '@/entities/book.to.store.entity';
 import { BookToStoreRepository } from '@/repositories/book/book.to.store.repository';
 import BookToStoreResDto from '@/controllers/book/response-dto/book.to.store.dto';
+import BookStoreQueryDto from '@/controllers/book/dto/book.store.query.dto';
 
 @Service()
 export class BookManagerService {
@@ -81,7 +82,7 @@ export class BookManagerService {
     );
   };
 
-  //Belirli bir kitabın belirli bir kitapçıya belirli bir miktarını ekleyebilme kaldırabılme işlemi
+  //Belirli bir kitabın belirli bir kitapçıya belirli bir miktarını ekleyebilme kaldırabılme işlemine dair örnek bir servis....
   public addStock = async (dto: AddStockDto, req: Request) => {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
@@ -161,6 +162,20 @@ export class BookManagerService {
             Messages.SUCCESS_CREATE,
             convertData
           );
+        } catch (error) {
+          throw error;
+        }
+      }
+    );
+  };
+
+  public lookupBookStore = async (req: Request, query: BookStoreQueryDto) => {
+    return await this.dbSource.manager.transaction(
+      async (transactionalEntityManager: EntityManager) => {
+        try {
+          const bookStores = await transactionalEntityManager
+            .withRepository(StoreRepository)
+            .customFindAllWithQuery(query);
         } catch (error) {
           throw error;
         }

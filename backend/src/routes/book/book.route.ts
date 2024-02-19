@@ -8,6 +8,8 @@ import BookStoreCreateDto from '@/controllers/book/dto/store.create.dto';
 import { BookManagerController } from '@/controllers/book/book.controller';
 import AddStockDto from '@/controllers/book/dto/add.stock.dto';
 import BookCreateDto from '@/controllers/book/dto/book.create.dto';
+import BookStoreQueryDto from '@/controllers/book/dto/book.store.query.dto';
+import { QueryValidationMiddleware } from '@/middlewares/query.validation.middleware';
 
 export class BookManagerRoute implements Routes {
   private static instance: BookManagerRoute;
@@ -53,6 +55,13 @@ export class BookManagerRoute implements Routes {
       Is.hasPermission(UserType.Admin),
       ValidationMiddleware(AddStockDto),
       this.bookManager.addStockHandler
+    );
+
+    this.router.get(
+      `${this.path}${RouterPath.BookStoreEndpoint}`,
+      Is.loggedIn,
+      QueryValidationMiddleware(BookStoreQueryDto),
+      this.bookManager.lookupBookStoreHandler
     );
   }
 }

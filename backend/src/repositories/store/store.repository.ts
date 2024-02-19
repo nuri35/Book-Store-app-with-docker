@@ -1,4 +1,7 @@
-import { IStoreCreationData } from '@/common-types/interfaces/repo.interface';
+import {
+  IPaginatedFilterResult,
+  IStoreCreationData,
+} from '@/common-types/interfaces/repo.interface';
 import { StoreEntity } from '@/entities/store.entity';
 import DataSourceFactory from '@source/data.source';
 
@@ -28,6 +31,20 @@ export const StoreRepository = DataSourceFactory.source
         where: {
           id,
         },
+      });
+    },
+
+    async customFindAllWithQuery(paginateQuery: IPaginatedFilterResult) {
+      const { page, limit } = paginateQuery;
+      return await this.findAndCount({
+        select: {
+          id: true,
+          name: true,
+          address: true,
+          phoneNumber: true,
+        },
+        take: limit,
+        skip: (page - 1) * limit,
       });
     },
   });

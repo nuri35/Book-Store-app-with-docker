@@ -4,6 +4,7 @@ import BookStoreCreateDto from '@/controllers/book/dto/store.create.dto';
 import { BookManagerService } from '@/services/book/book.service';
 import BookCreateDto from '@/controllers/book/dto/book.create.dto';
 import AddStockDto from '@/controllers/book/dto/add.stock.dto';
+import BookStoreQueryDto from '@/controllers/book/dto/book.store.query.dto';
 
 export class BookManagerController {
   private bookManager = Container.get(BookManagerService);
@@ -50,6 +51,20 @@ export class BookManagerController {
         req.body as AddStockDto,
         req
       );
+      next('router');
+    } catch (error: any) {
+      next(error);
+    }
+  };
+
+  public lookupBookStoreHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const queryDto = req.query as unknown as BookStoreQueryDto;
+      res.locals.data = await this.bookManager.lookupBookStore(req, queryDto);
       next('router');
     } catch (error: any) {
       next(error);

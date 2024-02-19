@@ -16,7 +16,7 @@
 		"memberTypeControl": "Dogru bir üye tipi girin",
 		"nestedValidation": "Geçerli bir {{property}} girin",
 		"isAtLeastOneField": "En az bir alan girin",
-		"isBoolean": "Geçerli bir arşiv değeri girin",
+		"isBoolean": "Geçerli bir  değer girin",
 		"min": "{{property}} alanı istenilen uzunlukta değil",
 		"isInt": "{{property}} alanı geçerli bir sayı değil",
 		"minLength": "{{property}} alanı istenilen uzunlukta değil",

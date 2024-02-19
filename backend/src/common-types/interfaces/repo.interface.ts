@@ -30,3 +30,8 @@ export interface IBookCreationData {
   ISBN: string;
   genre: GenreType;
 }
+
+export interface IPaginatedFilterResult {
+  page: number;
+  limit: number;
+}
