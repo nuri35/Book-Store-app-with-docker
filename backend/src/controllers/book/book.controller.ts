@@ -70,4 +70,18 @@ export class BookManagerController {
       next(error);
     }
   };
+
+  public lookupStoreToBookHandler = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const queryDto = req.query as unknown as BookStoreQueryDto;
+      res.locals.data = await this.bookManager.lookupStoreToBook(req, queryDto);
+      next('router');
+    } catch (error: any) {
+      next(error);
+    }
+  };
 }

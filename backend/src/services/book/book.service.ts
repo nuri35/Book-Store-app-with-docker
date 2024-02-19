@@ -168,7 +168,7 @@ export class BookManagerService {
       }
     );
   };
-
+  // pagination ve filtreleme işlemleri için örnek bir servis...
   public lookupBookStore = async (req: Request, query: BookStoreQueryDto) => {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
@@ -176,6 +176,39 @@ export class BookManagerService {
           const bookStores = await transactionalEntityManager
             .withRepository(StoreRepository)
             .customFindAllWithQuery(query);
+
+          return new OkResponse<[StoreEntity[], number]>(
+            Code.SUCCESS,
+            Messages.SUCCESS,
+            bookStores
+          );
+        } catch (error) {
+          throw error;
+        }
+      }
+    );
+  };
+  // cıft tarafllı Her bir mağazada mevcut olan kitapları görüntüleyebilme ve hangi kitapların hangi kitapçılarda bulunduğunu sorgulayabilme işlemi için örnek bir servis...
+  public lookupStoreToBook = async (req: Request, query: BookStoreQueryDto) => {
+    return await this.dbSource.manager.transaction(
+      async (transactionalEntityManager: EntityManager) => {
+        let relatedStoreAndBook: [(StoreEntity | BookEntity)[], number];
+        try {
+          if (query.storeToBook) {
+            relatedStoreAndBook = await transactionalEntityManager
+              .withRepository(StoreRepository)
+              .customFindAllWithQueryRelated(query);
+          } else {
+            relatedStoreAndBook = await transactionalEntityManager
+              .withRepository(BookRepository)
+              .customFindAllWithQueryRelated(query);
+          }
+
+          return new OkResponse<[(StoreEntity | BookEntity)[], number]>(
+            Code.SUCCESS,
+            Messages.SUCCESS,
+            relatedStoreAndBook
+          );
         } catch (error) {
           throw error;
         }

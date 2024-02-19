@@ -10,6 +10,7 @@ export enum RouterPath {
   BookStoreEndpoint = 'bookstore',
   BookEndpoint = 'book',
   StockEndpoint = 'stock',
+  StoreToBookEndpoint = 'storeToBook', // hangı magzada hnagı kıtaplar var tum liste
   LogoutEndpoint = 'logout',
   ReNewTokenEndpoint = 'refreshToken',
 }

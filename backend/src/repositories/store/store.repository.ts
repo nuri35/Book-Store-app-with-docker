@@ -45,6 +45,41 @@ export const StoreRepository = DataSourceFactory.source
         },
         take: limit,
         skip: (page - 1) * limit,
+        order: {
+          createdAt: 'DESC',
+        },
+      });
+    },
+
+    async customFindAllWithQueryRelated(paginateQuery: IPaginatedFilterResult) {
+      const { page, limit } = paginateQuery;
+      return await this.findAndCount({
+        select: {
+          id: true,
+          createdAt: true,
+          name: true,
+          address: true,
+          phoneNumber: true,
+          bookToStores: {
+            id: true,
+            quantity: true,
+            book: {
+              id: true,
+              title: true,
+              author: true,
+            },
+          },
+        },
+        relations: {
+          bookToStores: {
+            book: true,
+          },
+        },
+        take: limit,
+        skip: (page - 1) * limit,
+        order: {
+          createdAt: 'DESC',
+        },
       });
     },
   });

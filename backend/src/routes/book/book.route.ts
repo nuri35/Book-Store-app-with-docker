@@ -63,5 +63,12 @@ export class BookManagerRoute implements Routes {
       QueryValidationMiddleware(BookStoreQueryDto),
       this.bookManager.lookupBookStoreHandler
     );
+
+    this.router.get(
+      `${this.path}${RouterPath.StoreToBookEndpoint}`,
+      Is.loggedIn,
+      QueryValidationMiddleware(BookStoreQueryDto),
+      this.bookManager.lookupStoreToBookHandler
+    );
   }
 }

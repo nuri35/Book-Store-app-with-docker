@@ -1,5 +1,5 @@
 import { Transform } from 'class-transformer';
-import { IsInt, Min } from 'class-validator';
+import { IsBoolean, IsInt, Min } from 'class-validator';
 
 class BookStoreQueryDto {
   @Transform(({ value }) => +value)
@@ -11,6 +11,10 @@ class BookStoreQueryDto {
   @IsInt()
   @Min(1)
   page: number;
+
+  @Transform(({ value }) => value === 'true')
+  @IsBoolean()
+  storeToBook: boolean; // eger true ise tum magazaları ve her bırının altındakı kıtapları getırır
 }
 
 export default BookStoreQueryDto;

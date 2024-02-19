@@ -1,3 +1,4 @@
+import { IPaginatedFilterResult } from '@/common-types/interfaces/repo.interface';
 import AddStockDto from '@/controllers/book/dto/add.stock.dto';
 import { BookToStoreEntity } from '@/entities/book.to.store.entity';
 import DataSourceFactory from '@source/data.source';

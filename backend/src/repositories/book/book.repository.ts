@@ -1,4 +1,7 @@
-import { IBookCreationData } from '@/common-types/interfaces/repo.interface';
+import {
+  IBookCreationData,
+  IPaginatedFilterResult,
+} from '@/common-types/interfaces/repo.interface';
 import { BookEntity } from '@/entities/book.entity';
 import DataSourceFactory from '@source/data.source';
 
@@ -26,6 +29,40 @@ export const BookRepository = DataSourceFactory.source
         },
         where: {
           id,
+        },
+      });
+    },
+
+    async customFindAllWithQueryRelated(paginateQuery: IPaginatedFilterResult) {
+      const { page, limit } = paginateQuery;
+      return this.findAndCount({
+        select: {
+          id: true,
+          createdAt: true,
+          author: true,
+          title: true,
+          ISBN: true,
+          genre: true,
+          bookToStores: {
+            id: true,
+            quantity: true,
+            store: {
+              id: true,
+              name: true,
+              address: true,
+              phoneNumber: true,
+            },
+          },
+        },
+        relations: {
+          bookToStores: {
+            store: true,
+          },
+        },
+        take: limit,
+        skip: (page - 1) * limit,
+        order: {
+          createdAt: 'DESC',
         },
       });
     },
