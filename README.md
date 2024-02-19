@@ -1,4 +1,4 @@
-# Book-Store-app
+# Book-Store-app with Event-Driven Architecture
 
 
 # Project Description:
@@ -96,4 +96,194 @@ If you have any question, please do not hesitate to ask.
 | UserLogEntity | id, deviceName, explanation, operation, table, tableKeyId, user | Many-to-One with UserEntity |
 
 
+ ## Features with TypeORM
+
+- **Custom Repositories:** Custom repositories were utilized for database operations.
+
+- **Transactions:** Transactions were used to manage operations atomically.
+
+- **Entity Listeners and Subscribers:** Entity listeners and subscribers were employed to define custom behaviors that will automatically execute during database operations.
+
+
+## Response Models Using DTOs
+
+- **DTOs for Response:** Data Transfer Objects (DTOs) were employed for defining response models.
+
+  - Objects specified in DTOs: The objects defined in DTOs were returned as responses, providing a structured and tailored data format to clients.
+
+## Project Workflow on Book Store Management
+   
+   
+               +-----------------------+     +-----------------------+
+         |                       |     |                       |
+         |      Admin Role       |     |      User Role        |
+         |                       |     |                       |
+         +-----------------------+     +-----------------------+
+               |          |                   |          |
+               |          |                   |          |
+                  v          |                   v          |
+         +------------------+  |             +------------------+
+         |                  |  |             |                  |
+         |  Create Bookstore|  |             |  View Bookstores |
+         |                  |  |             |                  |
+         +------------------+  |             +------------------+
+                  |          |                   |          |
+                  |          |                   |          |
+                  v          |                   v          |
+         +------------------+  |             +------------------+
+         |                  |  |             |                  |
+         |    Add New Book  |  |             |  View Books in   |
+         |                  |  |             |  Each Store      |
+         +------------------+  |             +------------------+
+                  |          |                   |          |
+                  |          |                   |          |
+                  v          |                   v          |
+         +------------------+  |             +------------------+
+         |                  |  |             |                  |
+         |  Add or Remove   |  |             | View Store in   |
+         |                  |  |             |  Each Books  |
+         |                  |  |             |                  |
+         +------------------+  |             +------------------+
+                  |          |                   |          |
+                  |          |                   |          |
+                  v          |                   v          |
+         +------------------+  |                   |          |
+         |                  |  |                   |          |
+         |  Manage Users &  |  |                   |          |
+         |  Roles           |  |                   |          |
+         |                  |  |                   |          |
+         +------------------+  |                   |          |
+                              |                   |
+                              +-------------------+
+
+## Endpoints -  Book Store Management
+
+## Admin Operations
+
+### Create New User
+- **Method:** `POST`
+- **Endpoint:** `/api/v1/bookManager/users`
+- **Permissions:** Accessible by users who are logged in and have Admin privileges.
+- **Data Format:** JSON
+- **Body:** 
+  ```json
+  {
+    "type": 1,
+    "mail": "sirziysddsemlu@gufum.com",
+    "name": "nuri",
+    "surname": "sen",
+    "phone": "+905360565521",
+    "password": "564422"
+  }
+
+
+#### Add New Book
+- **Method:** `POST`
+- **Endpoint:** `/api/v1/bookManager/book`
+- **Permissions:** Accessible by users who are logged in and have Admin privileges.
+- **Data Format:** JSON
+- **Body:** 
+  ```json
+  {
+  "title": "fenerbahce",
+    "author": "kemal",
+    "publicationYear": 1920,
+    "ISBN": "1232512lks1",
+    "genre":  6
+  }
+
+#### Create New Bookstore
+- **Method:** `POST`
+- **Endpoint:** `/api/v1/bookManager/bookstore`
+- **Permissions:** Accessible by users who are logged in and have Admin privileges.
+- **Data Format:** JSON
+- **Body:** 
+  ```json
+  {
+     "name": "datasss kitabevi",
+    "address": "izmir",
+   "phoneNumber": "+905324663521"
+  }
+  
+
+#### Add or Remove Stock
+- **Method:** `POST`
+- **Endpoint:** `/api/v1/bookManager/stock`
+- **Permissions:** Accessible by users who are logged in and have Admin privileges.
+- **Data Format:** JSON
+- **Body:** 
+  ```json
+  {
+    "storeId": 1,
+    "bookId": 1,
+    "quantity": 16,
+    "isRemove": false
+  }
+
+## User Operations
+
+#### View Bookstores
+
+- **Method:** `GET`
+- **Endpoint:** `/api/v1/bookManager/bookstore?limit=10&page=1`
+- **Permissions:** Accessible by users who are logged in and have User privileges.
+- **Data Format:** JSON
  
+
+#### View Books in Each Store or View Store in Each Books
+- **Method:** `GET`
+- **Endpoint:** `/api/v1/bookManager/storeToBook?limit=10&page=1&storeToBook=false`
+- **Permissions:** Accessible by users who are logged in and have User privileges.
+- **Data Format:** JSON
+
+
+
+## Database Schema on  Book Store Management
+
+    BookEntity          BookToStoreEntity            StoreEntity
+    +------------+     +------------------+          +------------+
+    | book_id    |     | book_id          |          | store_id   |
+    | title      |     | store_id         |          | name       |
+    | author     |     | quantity         |          | address    |
+    | ISBN       |     +------------------+          | phoneNumber|
+    | genre      |            |                    |            |
+    +------------+            |                    +------------+
+                          
+
+
+- ### Ways to run the application
+    #1:) for local development without docker
+
+    - ### Package installation
+        - When we run our project with Docker in the production environment or locally, global packages will be installed automatically. Entering these commands is sufficient only for our team members who will run it for the first time locally without docker.
+            - ``git clone or git pull``
+            - ``npm install -g win-node-env``
+
+            - ``npm  i -g tslib``
+
+            - ``npm i``
+
+    - ### Requirements
+
+        - To start the system, implement the environment files and configuration files. Additionally, add the following values to the environment file.
+        - For security reasons, we do not display the values inside the .env files. By downloading the application from this link https://www.gpg4win.org/ and entering the password for the encrypted .env file on your local machine, you can make it readable again.
+
+    
+    
+    #2:) for local development with docker
+    
+    - ### Requirements
+        - Docker and Docker Compose must be installed on your local machine.
+        - After cloning the project, you can run the following command to start the project.
+        
+    - ``docker-compose up``
+    
+    ``
+
+
+## Author
+
+👤 **Nurettin Şen**
+
+- Linkedin: [@nurettin-sen](https://www.linkedin.com/in/nurettin-sen/)
+- Github: [@nuri35](https://github.com/nuri35)
