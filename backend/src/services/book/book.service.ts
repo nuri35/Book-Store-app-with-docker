@@ -81,7 +81,7 @@ export class BookManagerService {
     );
   };
 
-  //Belirli bir kitabın belirli bir kitapçıya belirli bir miktarını ekleyebilme
+  //Belirli bir kitabın belirli bir kitapçıya belirli bir miktarını ekleyebilme kaldırabılme işlemi
   public addStock = async (dto: AddStockDto, req: Request) => {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
