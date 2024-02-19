@@ -1,4 +1,4 @@
-import { IsNumber } from 'class-validator';
+import { IsNumber, IsBoolean } from 'class-validator';
 
 class AddStockDto {
   @IsNumber()
@@ -9,5 +9,8 @@ class AddStockDto {
 
   @IsNumber()
   quantity: number; // kactane eklenecek bilgisi
+
+  @IsBoolean()
+  isRemove: boolean; // eklenecek mi cıkarılacak mı
 }
 export default AddStockDto;

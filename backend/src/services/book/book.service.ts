@@ -81,6 +81,7 @@ export class BookManagerService {
     );
   };
 
+  //Belirli bir kitabın belirli bir kitapçıya belirli bir miktarını ekleyebilme
   public addStock = async (dto: AddStockDto, req: Request) => {
     return await this.dbSource.manager.transaction(
       async (transactionalEntityManager: EntityManager) => {
@@ -116,17 +117,38 @@ export class BookManagerService {
             dto.storeId,
             dto.bookId
           );
-
-          if (!bookToStore) {
-            result = await bookToStoreMethod.customCreate(
-              dto,
-              req.currentSession!.user.id
-            );
+          if (!dto.isRemove) {
+            // kaldırma işlemı degıl ise...
+            if (!bookToStore) {
+              result = await bookToStoreMethod.customCreate(
+                dto,
+                req.currentSession!.user.id
+              );
+            } else {
+              bookToStore.quantity += dto.quantity;
+              bookToStore.executor = req.currentSession!.user.id;
+              await transactionalEntityManager.save(bookToStore);
+              result = bookToStore;
+            }
           } else {
-            bookToStore.quantity += dto.quantity;
-            bookToStore.executor = req.currentSession!.user.id;
-            await transactionalEntityManager.save(bookToStore);
-            result = bookToStore;
+            if (!bookToStore || bookToStore.quantity === 0) {
+              throw new NotFoundError(
+                ErrorCode.RECORD_NOT_FOUND,
+                ErrorMessages.RECORD_NOT_FOUND,
+                [
+                  {
+                    logCode: ErrorCode.RECORD_NOT_FOUND,
+                    logMessage: ErrorMessages.RECORD_NOT_FOUND,
+                    logData: `opssss`,
+                  },
+                ]
+              );
+            } else {
+              bookToStore.quantity -= dto.quantity;
+              bookToStore.executor = req.currentSession!.user.id;
+              await transactionalEntityManager.save(bookToStore);
+              result = bookToStore;
+            }
           }
 
           const convertData = TransformService.convert<
@@ -146,4 +168,3 @@ export class BookManagerService {
     );
   };
 }
-// bu endpoint'De okey... gozden gecırısın en son 1 saat sonra ondan sonra dırek remove etmeyı halledersın.
